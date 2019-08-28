@@ -1,0 +1,18 @@
+.flippedChar {
+  -moz-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+
+.enlargedEmoji {
+  font-size: 200%;
+  display: inline-block;
+}
+
+#header {
+  display: block;
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+}

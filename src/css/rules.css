@@ -1,0 +1,20 @@
+ #rules{
+ 	width:95%;
+ 	display:block;
+ 	text-align: center;
+ 	margin: 0 auto;
+}
+
+#rule-text{
+  background-color: gray;
+}
+
+#questionIcon{
+  display: block;
+  justify-content: right;
+  text-align: right;
+}
+
+#question{
+  max-width: 2vw;
+}

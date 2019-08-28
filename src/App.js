@@ -1,26 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './css/App.css';
+import Header from './components/header.jsx';
+import Footer from './components/footer.jsx';
+import Intro from './pages/intro.jsx';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+      playGame:false,
+      gameGenerated: false,
+      showAnswer: false,
+      puzzle: {},
+      answer:{},
+    };
+    this.renderIntro = this.renderIntro.bind(this);
+  }
+
+  renderIntro(){
+    const {playGame} = this.state;
+    if(playGame){
+      return (<Intro />);
+    }
+    return null;
+  }
+
+  render(){
+    return (
+        <div className="App">
+          <Header />
+          <Footer />
+          {this.renderIntro()}
+        </div>
+    );
+  }
 }
+
+
 
 export default App;
