@@ -3,7 +3,7 @@ import './css/App.css';
 import Header from './components/header.jsx';
 import Footer from './components/footer.jsx';
 import Intro from './pages/intro.jsx';
-
+import Game from './pages/game.jsx';
 
 class App extends React.Component{
 
@@ -11,29 +11,45 @@ class App extends React.Component{
     super(props);
     this.state = {
       playGame:false,
-      gameGenerated: false,
       showAnswer: false,
-      puzzle: {},
+      submittedPuzzle: {},
       answer:{},
     };
-    this.renderIntro = this.renderIntro.bind(this);
+    this.renderApp = this.renderApp.bind(this);
+    this.togglePuzzle = this.togglePuzzle.bind(this);
   }
 
-  renderIntro(){
-    const {playGame} = this.state;
-    if(playGame){
-      return (<Intro />);
+  togglePuzzle(){
+    this.setState({
+      playGame: true,
+    });
+  }
+
+  //Render:
+  renderApp(){
+    const {playGame, showAnswer} = this.state;
+    if(!playGame){
+      return (
+        <Intro
+          onClick={this.togglePuzzle}
+        />
+      );
     }
-    return null;
+    return (
+      <Game 
+          puzzle={this.puzzle} 
+          showAnswer={showAnswer}
+        />
+    );
   }
 
   render(){
-    return (
-        <div className="App">
-          <Header />
-          <Footer />
-          {this.renderIntro()}
-        </div>
+    return(
+      <div>
+        <Header/>
+        {this.renderApp()}
+        <Footer/>
+      </div>
     );
   }
 }
