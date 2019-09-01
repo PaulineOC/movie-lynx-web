@@ -1,8 +1,11 @@
 import React from 'react';
 //import PropTypes from 'prop-types';
-
 import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
+
+
+require('bootstrap');
+
 
 
 class Game extends React.Component{
@@ -101,12 +104,32 @@ class Game extends React.Component{
 			answer: copy,
 		};
 		this.renderGame = this.renderGame.bind(this);
-		this.setActorMdId = this.setActorMdId.bind(this);
 		this.setMovieMdId = this.setMovieMdId.bind(this);
+
+		this.selectActor = this.selectActor.bind(this);
+		this.setActorMdId = this.setActorMdId.bind(this);
+		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
 	}
 
+
 	//make a request
-	setActorMdId(groupIndx, mdId){
+
+	async selectActor(groupIndx, mdId, name, path){
+		await this.setActorMdId(groupIndx, mdId);
+		await this.setActorPictureAndName(groupIndx, name, path);
+		console.log('done with select actor here state:', this.state);
+	}
+
+	async setActorPictureAndName(groupIndx, name, path){
+		const newPuzzle = this.state.puzzle.slice();
+		newPuzzle[groupIndx].origin.name= name;
+		newPuzzle[groupIndx-1].target.name = name;
+		newPuzzle[groupIndx].origin.picturePath= path;
+		newPuzzle[groupIndx-1].target.picturePath = path;
+		this.setState({puzzle: newPuzzle}) //set the new state	
+	}
+
+	async setActorMdId(groupIndx, mdId){
 		const newPuzzle = this.state.puzzle.slice();
 		newPuzzle[groupIndx].origin.actorMdbId= mdId;
 		newPuzzle[groupIndx-1].target.actorMdbId = mdId;
@@ -131,7 +154,7 @@ class Game extends React.Component{
 					actorId={group.origin['actorId']}
 					picturePath = {group.origin['picturePath']}
 					name = {group.origin['name']}
-					setSubmitData= {this.setActorMdId} 
+					setSubmitData= {this.selectActor} 
 				/>
 			);
 
@@ -160,10 +183,7 @@ class Game extends React.Component{
 					/>
 				);
 			}
-			console.log('here are flattened columns: ');
-			console.log(toDisplay);
 		});
-
 		return toDisplay;
 	}
 
