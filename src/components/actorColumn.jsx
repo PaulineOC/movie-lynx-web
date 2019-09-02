@@ -58,7 +58,7 @@ class ActorColumn extends React.Component{
 					crossdomain: true,
 				}
 			};
-			let results = await postRequest( url, body);
+			let results = await postRequest( url, body, config);
 			console.log('here are the results of the search for actor: ');
 			console.log(results);
 
@@ -129,7 +129,6 @@ class ActorColumn extends React.Component{
 		let obj = {
 			actor: this.state.input,
 		}
-
 
 		//result from search? h m m
 		let testId = 100;
