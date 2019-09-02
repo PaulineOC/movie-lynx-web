@@ -4,7 +4,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 require('bootstrap');
 
-
+import { postRequest } from "../services/requests";
 import "../css/game.css";
 import Modal from './modal';
 
@@ -43,14 +43,29 @@ class ActorColumn extends React.Component{
 		});
 	}
 
-	searchActor(){
+	async searchActor(){
 		console.log('sending data');
-		console.log(this.state.input);
-		//make a post request. THEN show the modal 
-		this.setState({
-			showModal: true,
-			hasSubmitted: true,
-		});
+		const {input} = this.state;
+		if(input){
+			console.log(this.state.input);
+			//make a post request. THEN show the modal 
+			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/searchActor';
+			let body = { 
+				actor: this.state.input
+			}; 
+			let config = {
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					crossdomain: true,
+				}
+			};
+			let results = await postRequest( url, body);
+			console.log(results);
+
+			this.setState({
+				showModal: true,
+			});
+		}
 	}
 
 	renderOriginTarget(imgPath, name){
@@ -73,7 +88,6 @@ class ActorColumn extends React.Component{
 	}
 
 	renderInputActor(imgPath, name){
-
 
 		let imgStyle = {
 			'backgroundImage': `url(${imgPath})`};
@@ -108,8 +122,15 @@ class ActorColumn extends React.Component{
 	}
 
 
+	//completed after the user slects an actor
 
 	async submitActor(){
+		let findActor = '';
+		let obj = {
+			actor: this.state.input,
+		}
+		
+
 
 		//result from search? h m m
 		let testId = 100;
