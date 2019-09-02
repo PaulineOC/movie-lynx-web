@@ -123,9 +123,9 @@ class Game extends React.Component{
 					crossdomain: true,
 				}
 			};
-			let testPuzzle = await getRequest( url, {}, config);
-			console.log('here are the results of getting puzzle: ');
-			console.log(testPuzzle);
+			//let testPuzzle = await getRequest( url, {}, config);
+			//console.log('here are the results of getting puzzle: ');
+			//console.log(testPuzzle);
 		//make a request
 		//set state correctly 
 	}
