@@ -31,7 +31,6 @@ class ActorColumn extends React.Component{
 
 	handleInput(e){
 		const { target : { value } } = e;
-		console.log(value);
 		this.setState({
 			input: value
 		});
@@ -44,10 +43,10 @@ class ActorColumn extends React.Component{
 	}
 
 	async searchActor(){
-		console.log('sending data');
 		const {input} = this.state;
+		console.log('sending actor input: ',input);
+
 		if(input){
-			console.log(this.state.input);
 			//make a post request. THEN show the modal 
 			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/searchActor';
 			let body = { 
@@ -60,6 +59,7 @@ class ActorColumn extends React.Component{
 				}
 			};
 			let results = await postRequest( url, body);
+			console.log('here are the results of the search for actor: ');
 			console.log(results);
 
 			this.setState({
@@ -129,16 +129,12 @@ class ActorColumn extends React.Component{
 		let obj = {
 			actor: this.state.input,
 		}
-		
 
 
 		//result from search? h m m
 		let testId = 100;
 		let testName = 'Bill Murray';
 		let testPath = '/billMurray';
-
-		console.log(this.props);
-
 
 		//changes Game state
 		const {setSubmitData, groupId  } = this.props;
@@ -147,9 +143,6 @@ class ActorColumn extends React.Component{
 		//Changes actor state 
 		await this.setState({input: this.props.name});
 		await this.closeModal();
-
-		console.log(this.state.input);
-		console.log(this.props.name);
 	}
 
 	render(){
