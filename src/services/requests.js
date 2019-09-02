@@ -10,6 +10,19 @@ async function postRequest(url, params, config){
 	});
 }
 
+async function getRequest(url, params, config){
+	axios.get(url, params, config)
+	.then((res)=>{
+		console.log(res);
+		return res;
+	})
+	.catch((err)=>{
+		console.log(err);
+		return err;
+	});
+}
+
 export {
-	postRequest
+	postRequest,
+	getRequest
 }

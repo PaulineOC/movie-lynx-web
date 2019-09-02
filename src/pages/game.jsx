@@ -3,6 +3,8 @@ import React from 'react';
 import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
 
+import { getRequest } from "../services/requests";
+
 
 require('bootstrap');
 
@@ -112,7 +114,22 @@ class Game extends React.Component{
 	}
 
 
-	//make a request
+	async componentDidMount(){
+			//make a get request to get puzzle
+			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/';
+			let config = {
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					crossdomain: true,
+				}
+			};
+			let testPuzzle = await getRequest( url, {}, config);
+			console.log('here are the results of getting puzzle: ');
+			console.log(testPuzzle);
+		//make a request
+		//set state correctly 
+	}
+
 
 	async selectActor(groupIndx, mdId, name, path){
 		await this.setActorMdId(groupIndx, mdId);
