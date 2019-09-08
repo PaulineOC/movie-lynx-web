@@ -52,9 +52,9 @@ class Row extends React.Component{
 
 Row.propTypes = {
 	isActor: PropTypes.bool.isRequired,
-	imgPath: PropTypes.string.isRequired,
+	imgPath: PropTypes.string,
 	name: PropTypes.string.isRequired,
-	mdbId: PropTypes.string.isRequired,
+	mdbId: PropTypes.number.isRequired,
 	selector: PropTypes.func,
 };
 

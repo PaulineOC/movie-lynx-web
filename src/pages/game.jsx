@@ -1,5 +1,6 @@
 import React from 'react';
 //import PropTypes from 'prop-types';
+import axios from 'axios';
 import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
 
@@ -8,7 +9,12 @@ import { getRequest } from "../services/requests";
 
 require('bootstrap');
 
-
+const config = {
+	headers: {
+		'Access-Control-Allow-Origin': '*',
+		crossdomain: true,
+	}
+};
 
 class Game extends React.Component{
 
@@ -77,7 +83,12 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-		let puzzle = this.puzzle.map((item, indx) =>{
+		const copy = this.puzzle.splice();
+
+		let firstActor = this.puzzle[0].origin;
+		let lastActor = this.puzzle[this.puzzle.length-1].target;
+
+		let puzzleEmptied = this.puzzle.map((item, indx) =>{
 			return {
 				movie: {
 					movieId: indx,
@@ -99,15 +110,17 @@ class Game extends React.Component{
 				},
 			};
 		});
-		const copy = this.puzzle.splice();
+
+		puzzleEmptied[0].origin = firstActor;
+		puzzleEmptied[puzzleEmptied.length-1].target = lastActor;
+
 		this.state = {
-			puzzle: this.puzzle,
+			puzzle: puzzleEmptied,
 			showAnswer: this.props.showAnswer,
 			answer: copy,
+			answerCorrect: null,
 		};
 		this.renderGame = this.renderGame.bind(this);
-		this.setMovieMdId = this.setMovieMdId.bind(this);
-
 		this.selectActor = this.selectActor.bind(this);
 		this.setActorMdId = this.setActorMdId.bind(this);
 		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
@@ -115,8 +128,9 @@ class Game extends React.Component{
 		this.setMovie= this.setMovie.bind(this);
 		this.setMovieMdId = this.setMovieMdId.bind(this);
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
-	}
 
+		this.submitAnswer=this.submitAnswer.bind(this);
+	}
 
 	async componentDidMount(){
 			//make a get request to get puzzle
@@ -178,7 +192,6 @@ class Game extends React.Component{
 	renderGame(data){
 		let  toDisplay = [];
 		data.forEach((group, index) =>{
-			// Push Origin Actor
 			toDisplay.push(
 				<ActorColumn
 					key = {`OriginID-${index}`}
@@ -191,7 +204,6 @@ class Game extends React.Component{
 				/>
 			);
 
-			//Push Movie
 			toDisplay.push(
 				<MovieColumn
 					key = {`MovieId-${index}`}
@@ -203,7 +215,6 @@ class Game extends React.Component{
 				/>
 			);
 
-			//Last set: push target actor
 			if(index!==data.length-1){
 				toDisplay.push(
 					<ActorColumn
@@ -217,15 +228,47 @@ class Game extends React.Component{
 				);
 			}
 		});
+
+		console.log('here is the data:', toDisplay);
 		return toDisplay;
 	}
 
+	async submitAnswer(){
+
+
+		const {puzzle} = this.state;
+		console.log('here is final state of the game?');
+		//console.log(puzzle);
+		let url = (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com') + '/check';
+
+		let body = {
+			submittedPuzzle: puzzle,
+		}
+
+		axios.post(url, body, config).then((res) =>{
+			const {data} = res;
+			//console.log(res);
+			console.log('here are the results from submitting puzzle', data);
+			this.setState({
+				answerCorrect: res,
+			});
+		}).catch((err) =>{
+			console.log(err);
+			return err;
+		});
+
+	}
 
 	render(){
 		const { puzzle, answer } = this.state;
 		return (
 			<div id="game-dashboard">
 				{this.renderGame(puzzle)}
+				<button 
+					onClick={this.submitAnswer}
+				>
+					Submit answer!
+				</button>
 			</div>
 		);
 	}

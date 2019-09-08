@@ -102,7 +102,7 @@ class ActorColumn extends React.Component{
 						shutModal={this.closeModal}
 					>
 						<SearchTable
-							isActor={false}
+							isActor={true}
 							queryString={input}
 							selector={this.submitActor}
 						/>
@@ -157,8 +157,8 @@ class ActorColumn extends React.Component{
 
 ActorColumn.propTypes = {
   groupId: PropTypes.number.isRequired,
-  isOriginTargetActor: PropTypes.bool.isRequired,
-  actorId: PropTypes.number.isRequired,
+  isOriginTargetActor: PropTypes.bool,
+  actorId: PropTypes.number,
   picturePath: PropTypes.string,
   name: PropTypes.string,
   setSubmitData: PropTypes.func,
