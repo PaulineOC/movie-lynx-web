@@ -42,13 +42,13 @@ class App extends React.Component{
         />
     );
   }
-
+// <Footer/>
   render(){
     return(
       <div>
         <Header/>
         {this.renderApp()}
-        <Footer/>
+       
       </div>
     );
   }

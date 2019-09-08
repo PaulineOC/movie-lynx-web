@@ -5,12 +5,7 @@ require('bootstrap');
 class Modal extends React.Component {
 
   render() {
-    const { showModal, children} = this.props;
-
-    // Render nothing if the "show" prop is false
-    if(!showModal) {
-      return null;
-    }
+    const { children} = this.props;
 
     return (
       <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -37,7 +32,6 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  showModal: PropTypes.bool.isRequired,
   children: PropTypes.node
 };
 

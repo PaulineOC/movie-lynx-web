@@ -1,12 +1,14 @@
 /* eslint-disable */
-
 import React from "react";
 import PropTypes from 'prop-types';
-require('bootstrap');
+import dotenv from 'dotenv';
 
-import { postRequest } from "../services/requests";
 import "../css/game.css";
 import Modal from './modal';
+import SearchTable from './searchTable';
+
+dotenv.config();
+
 
 const anonymousPic = "../../public/anonymous.jpg";
 
@@ -16,56 +18,22 @@ class ActorColumn extends React.Component{
 		super(props);
 
 		this.state = {
-			hasSubmitted: false,
 			input: '',
 			showModal: false,
 		}
 		this.renderOriginTarget = this.renderOriginTarget.bind(this);
 		this.renderInputActor = this.renderInputActor.bind(this);
 		this.handleInput = this.handleInput.bind(this);
-		this.searchActor = this.searchActor.bind(this);
 
-		this.submitActor = this.submitActor.bind(this);
+		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
+		this.submitActor = this.submitActor.bind(this);
 	}
 
-	handleInput(e){
-		const { target : { value } } = e;
-		this.setState({
-			input: value
-		});
-	}
-
-	async closeModal(){
+	componentWillMount(){
 		this.setState({
 			showModal: false,
 		});
-	}
-
-	async searchActor(){
-		const {input} = this.state;
-		console.log('sending actor input: ',input);
-
-		if(input){
-			//make a post request. THEN show the modal 
-			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/searchActor';
-			let body = { 
-				actor: this.state.input
-			}; 
-			let config = {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-					crossdomain: true,
-				}
-			};
-			let results = await postRequest( url, body, config);
-			console.log('here are the results of the search for actor: ');
-			console.log(results);
-
-			this.setState({
-				showModal: true,
-			});
-		}
 	}
 
 	renderOriginTarget(imgPath, name){
@@ -88,7 +56,6 @@ class ActorColumn extends React.Component{
 	}
 
 	renderInputActor(imgPath, name){
-
 		let imgStyle = {
 			'backgroundImage': `url(${imgPath})`};
 		return(
@@ -105,15 +72,13 @@ class ActorColumn extends React.Component{
 	                className="actor-name"
 	                placeholder="Actor/Actress name"
 	                size="20"
-	                id="actor-{{this.target.idx}}"
-	                data-actor-name="{{this.target.name}}"
 	                onChange={this.handleInput}
 	                onBlur={this.handleInput}
 	                value={this.state.input}
                 />
 	            <button
 	            	className="modalBtn buttons"
-	            	onClick={this.searchActor}
+	            	onMouseDown={this.openModal}
 	            >
 	            	Search for Actor/Actress
 	            </button>
@@ -121,46 +86,57 @@ class ActorColumn extends React.Component{
 		);
 	}
 
+	handleInput(e){
+		const { target : { value } } = e;
+		this.setState({
+			input: value
+		});
+	}
 
-	//completed after the user slects an actor
+	showModal(){
+		const {showModal, input} = this.state;
+		if(input){
+			return(
+				<React.Fragment>
+					<Modal
+						shutModal={this.closeModal}
+					>
+						<SearchTable
+							isActor={false}
+							queryString={input}
+							selector={this.submitActor}
+						/>
+					</Modal>
+				</React.Fragment>
+			);
 
-	async submitActor(){
-		let findActor = '';
-		let obj = {
-			actor: this.state.input,
 		}
+	}
 
-		//result from search? h m m
-		let testId = 100;
-		let testName = 'Bill Murray';
-		let testPath = '/billMurray';
+	async openModal(){
+		await this.setState({
+				showModal: true,
+		});
+	}
 
-		//changes Game state
-		const {setSubmitData, groupId  } = this.props;
-		await setSubmitData(groupId, testId, testName, testPath );
+	async closeModal(){
+		this.setState({
+			showModal: false,
+		});
+	}
 
-		//Changes actor state 
+	async submitActor(imgPath, name, mdbId){
+		const {setSubmitData, groupId} = this.props;
+		await setSubmitData(groupId, mdbId, name, imgPath );
+
 		await this.setState({input: this.props.name});
 		await this.closeModal();
 	}
 
 	render(){
-		let testEle = (
-			<button 
-			onClick={this.submitActor}>
-				Replace with Bill Murray
-			</button>
-
-		);
 		const {isOriginTargetActor, imgPath, name} = this.props;
 		if(this.state.showModal){
-			return (
-				<Modal
-					children={testEle}
-					showModal={this.state.showModal}
-					shutModal={this.closeModal}
-				/>
-			);
+			return this.showModal();
 		}
 		if(isOriginTargetActor){
 			return (

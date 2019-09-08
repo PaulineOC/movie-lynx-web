@@ -77,7 +77,7 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-		let puzzle = this.puzzle.map((item, indx)=>{
+		let puzzle = this.puzzle.map((item, indx) =>{
 			return {
 				movie: {
 					movieId: indx,
@@ -111,6 +111,10 @@ class Game extends React.Component{
 		this.selectActor = this.selectActor.bind(this);
 		this.setActorMdId = this.setActorMdId.bind(this);
 		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
+
+		this.setMovie= this.setMovie.bind(this);
+		this.setMovieMdId = this.setMovieMdId.bind(this);
+		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
 	}
 
 
@@ -136,31 +140,44 @@ class Game extends React.Component{
 		console.log('done with select actor here state:', this.state);
 	}
 
+	async setActorMdId(groupIndx, mdId){
+		const newPuzzle = this.state.puzzle.slice();
+		newPuzzle[groupIndx].origin.actorMdbId= mdId;
+		newPuzzle[groupIndx-1].target.actorMdbId = mdId;
+		this.setState({puzzle: newPuzzle});
+	}
+
 	async setActorPictureAndName(groupIndx, name, path){
 		const newPuzzle = this.state.puzzle.slice();
 		newPuzzle[groupIndx].origin.name= name;
 		newPuzzle[groupIndx-1].target.name = name;
 		newPuzzle[groupIndx].origin.picturePath= path;
 		newPuzzle[groupIndx-1].target.picturePath = path;
-		this.setState({puzzle: newPuzzle}) //set the new state	
+		this.setState({puzzle: newPuzzle});
 	}
 
-	async setActorMdId(groupIndx, mdId){
-		const newPuzzle = this.state.puzzle.slice();
-		newPuzzle[groupIndx].origin.actorMdbId= mdId;
-		newPuzzle[groupIndx-1].target.actorMdbId = mdId;
-		this.setState({puzzle: newPuzzle}) //set the new state	
+	async setMovie(groupIndx, mdId, name, path){
+		await this.setMovieMdId(groupIndx, mdId);
+		await this.setMoviePictureAndName(groupIndx, name, path);
+		console.log('done with select movie here state:', this.state);
 	}
 
-	setMovieMdId(groupIndx, mdId){
+	async setMovieMdId(groupIndx, mdId){
 		const newPuzzle = this.state.puzzle.slice();
 		newPuzzle[groupIndx].movie.movieMdbId = mdId;
-		this.setState({puzzle: newPuzzle}) //set the new state
+		this.setState({puzzle: newPuzzle});
+	}
+
+	async setMoviePictureAndName(groupIndx, name, path){
+		const newPuzzle = this.state.puzzle.slice();
+		newPuzzle[groupIndx].movie.name= name;
+		newPuzzle[groupIndx].movie.picturePath= path;
+		this.setState({puzzle: newPuzzle});	
 	}
 
 	renderGame(data){
 		let  toDisplay = [];
-		data.forEach((group, index)=>{
+		data.forEach((group, index) =>{
 			// Push Origin Actor
 			toDisplay.push(
 				<ActorColumn
@@ -182,7 +199,7 @@ class Game extends React.Component{
 					movieId = {group.movie['movieId']}
 					picturePath = {group.movie['picturePath']}
 					name = {group.movie['name']}
-					setSubmitData = {this.setMovieMdId}
+					setSubmitData = {this.setMovie}
 				/>
 			);
 
