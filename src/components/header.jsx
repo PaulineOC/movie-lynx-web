@@ -1,5 +1,4 @@
 import React from 'react';
-import Rules from './rules.jsx';
 import '../css/header.css';
 
 const Header = () => (
@@ -15,7 +14,6 @@ const Header = () => (
         <span role="img" aria-label="Lynx">🐆</span>
       </div>
     </h2>
-    <Rules/>
   </div>
 );
 

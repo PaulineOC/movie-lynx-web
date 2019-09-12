@@ -4,10 +4,12 @@ import dotenv from 'dotenv';
 
 import "../css/game.css";
 import SearchTable from './searchTable';
-import Modal from './modal';
+import {Card, InputGroup, FormControl, Button, Modal} from 'react-bootstrap';
+import poster from '../images/poster.png';
+import {searchMovies} from '../services/helpers'
 
 dotenv.config();
-
+const basePosterUrl = 'https://image.tmdb.org/t/p/original';
 
 class MovieColumn extends React.Component{
 
@@ -15,50 +17,64 @@ class MovieColumn extends React.Component{
 		super(props);
 		this.state = {
 			input: '',
-			showModal: false,
+			show: false,
+			searchResults: []
 		}
 
+		this.renderModal = this.renderModal.bind(this);
 		this.renderInputMovie = this.renderInputMovie.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 
 		this.openModal = this.openModal.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 		this.submitMovie = this.submitMovie.bind(this);
+		this.searchMoviesHandler = this.searchMoviesHandler.bind(this);
+		this.renderMovieColumn = this.renderMovieColumn.bind(this);
 	}
 
-	componentWillMount(){
-		this.setState({
-			showModal: false,
-		});
+	async searchMoviesHandler() {
+		const {input} = this.state;
+		const results = await searchMovies(input);
+		this.setState({searchResults : results});
 	}
 
 	renderInputMovie(imgPath, name){
-		let imgStyle = {
-			'backgroundImage': `url(${imgPath})`};
 		return(
-			<React.Fragment>
-				<div className="actor-container">
-		            <div className="img-container">
-		              <div className="img-inner-container chainlink" style={imgStyle}>
-		              </div>
-		            </div>
-	            	<input
-	            		type="text"
-	            		className="movie-name"
-	            		placeholder="Movie name"
-	            		size="20"
-	            		onChange={this.handleInput}
-	            		onBlur={this.handleInput}
-	            		value={this.state.input}
-		            />
-		            <button
-	            	className="modalBtn buttons"
-	            	onMouseDown={this.openModal}
-	            	>
-	            		Search for Movie
-                	</button>
-	          </div>
-			</React.Fragment>
+			<Card border="light">
+				<Card.Img src={imgPath ? `${basePosterUrl}${imgPath}` : poster}/>
+				<Card.Body className="text-center">
+					<b>{name}</b>
+					<InputGroup className="mb-3">
+						<FormControl 
+							type="text" 
+							placeholder="Name" 
+							onChange={this.handleInput}
+							value={this.state.input}
+							size="sm"
+						/>
+						<InputGroup.Append>
+					     	<Button onMouseDown={this.openModal} variant="outline-secondary" size="sm">	            	
+				            	<i className="fa fa-search"/>
+			            	</Button>
+						</InputGroup.Append>
+					</InputGroup>
+				</Card.Body>
+			</Card>
+		);
+	}
+
+	renderModal() {
+		const {input, show, searchResults} = this.state;
+		return (
+			<Modal show={show} size='lg' centered onHide={this.closeModal} onEntering={this.searchMoviesHandler} scrollable>
+				<Modal.Header closeButton>
+					<Modal.Title>{input}</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<SearchTable searchResults={searchResults} isActor={false} selector={this.submitMovie} hideModal={this.closeModal}>
+					</SearchTable>
+				</Modal.Body>
+			</Modal>
 		);
 	}
 
@@ -69,35 +85,15 @@ class MovieColumn extends React.Component{
 		});
 	}
 
-	showModal(){
-		const {showModal, input} = this.state;
-		if(input){
-			return(
-				<React.Fragment>
-					<Modal
-						shutModal={this.closeModal}
-					>
-						<SearchTable
-							isActor={false}
-							queryString={input}
-							selector={this.submitMovie}
-						/>
-					</Modal>
-				</React.Fragment>
-			);
-
-		}
-	}
-
 	async openModal(){
 		await this.setState({
-				showModal: true,
+			show: true,
 		});
 	}
 
 	async closeModal(){
 		this.setState({
-			showModal: false,
+			show: false,
 		});
 	}
 
@@ -106,22 +102,21 @@ class MovieColumn extends React.Component{
 		const {setSubmitData, groupId} = this.props;
 		await setSubmitData(groupId, mdbId, name, imgPath );
 
-		await this.setState({input: this.props.name});
 		await this.closeModal();
 	}
 
-
-	render(){
-		const {imgPath, name} = this.props;
-
-		if(this.state.showModal){
-			return this.showModal();
-		}
+	renderMovieColumn() {
+		const {picturePath, name} = this.props;
 		return (
 			<React.Fragment>
-				{this.renderInputMovie(imgPath, name)}
+				{this.renderInputMovie(picturePath, name)}
+				{this.renderModal()}
 			</React.Fragment>
 		);
+	}
+
+	render(){
+		return this.renderMovieColumn();
 	}
 
 }
@@ -135,7 +130,7 @@ MovieColumn.propTypes = {
 
 MovieColumn.defaultProps = {
 	name: 'Select a Movie',
-	setSubmitData: ()=>{},
+	setSubmitData: () => {},
 };
 
 export default MovieColumn;

@@ -1,16 +1,15 @@
 import React from 'react';
-import Button from '../components/button';
+import Button from 'react-bootstrap/Button'
 
 class Intro extends React.Component{
 
 
 render(){
 	return (
-		<div style={{'backgroundColor': 'blue', 'height':'80	vh'}}>
-			<Button 
-				label={"Hi"}
-				onClick={this.props.onClick}
-			/>
+		<div>
+			<Button onClick={this.props.onClick}>
+				Hi
+			</Button>
 		</div>
 	);
 }
