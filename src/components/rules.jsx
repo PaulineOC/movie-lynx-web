@@ -1,8 +1,8 @@
 import React from 'react';
 import '../css/rules.css';
+import {Row, Container, Col, Card} from 'react-bootstrap';
 
-
-class Rules extends React.Component{
+class Rules extends React.Component {
 
 	constructor(props){
 		super(props);
@@ -20,23 +20,20 @@ class Rules extends React.Component{
 	}
 
 	renderRules(){
-		if(this.state.showRules){
+		if(this.state.showRules) {
 			return(
-				<div id="rule-text">
-		          <p>
-		            Chupa chups jelly caramels gummi bears chocolate bonbon carrot cake toffee. 
-		            Gummi bears chocolate bar carrot cake jelly marzipan. 
-		            Dessert chupa chups muffin oat cake lollipop wafer. 
-		            Cake tootsie roll gummies powder. 
-		            Candy liquorice sugar plum oat cake oat cake sesame snaps. 
-		            Chocolate cake cookie macaroon cookie.
-		            Powder jujubes chocolate macaroon fruitcake.
-		            Sugar plum cake soufflé chocolate cake bonbon cupcake. 
-		            Cupcake sweet roll toffee. 
-		            Jujubes chocolate tiramisu cheesecake bear claw tart. 
-		            Croissant cotton candy jelly-o. Chocolate cake jelly beans pastry macaroon pie
-		          </p>
-		        </div>
+				<Card>
+					<Card.Body>
+						<Card.Title>
+							Rules
+						</Card.Title>
+						<Card.Text>
+							Chupa chups jelly caramels gummi bears chocolate bonbon carrot cake toffee. 
+				            Gummi bears chocolate bar carrot cake jelly marzipan. 
+				            Dessert chupa chups muffin oat cake lollipop wafer.
+						</Card.Text>	
+					</Card.Body>
+		        </Card>
 			); 
 		}
 		return null;
@@ -44,17 +41,21 @@ class Rules extends React.Component{
 
 	render(){
 		return(
-			<div id="rules">
-		        <div id="questionIcon">
-		          <img
-		          	alt="questionIcon"
-		          	onClick={this.toggleRules}
-		          	id="question" 
-		          	src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png"/>
-		          	{this.renderRules()}
-	        	</div>
-      		</div>
-      );
+			<Container fluid={true}>
+				<Row>
+					<Col md={1}>
+						<img
+			          	alt="questionIcon"
+			          	onClick={this.toggleRules}
+			          	id="question" 
+			          	src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png"/>
+					</Col>
+					<Col md={11}>
+						{this.renderRules()}
+					</Col>
+				</Row>
+			</Container>
+        );
 	}
 }
 

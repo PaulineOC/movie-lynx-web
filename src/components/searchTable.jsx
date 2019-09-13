@@ -4,7 +4,11 @@ import axios from 'axios';
 
 import { searchActors } from "../services/requests";
 
-import Row from './row';
+import Table from 'react-bootstrap/Table';
+import '../css/searchTable.css';
+import anonymous from '../images/anonymous.png';
+import poster from '../images/poster.png';
+
 
 const config = {
 	headers: {
@@ -12,109 +16,72 @@ const config = {
 		crossdomain: true,
 	}
 };
+const baseProfileUrl = "https://image.tmdb.org/t/p/original";
 
 class SearchTable extends React.Component{
 
 	constructor(props){
-			super(props);
-			this.state = {
-				searchResults: [],
-			};
-			this.searchActor = this.searchActor.bind(this);
-			this.searchMovie = this.searchMovie.bind(this);
-			this.renderRow = this.renderRow.bind(this);
+		super(props);
 	}
 
-	async componentDidMount(){
-		const { isActor, queryString } = this.props;
-		if(isActor){
-			await this.searchActor(queryString);
+	renderThumbnail(result) {
+		const {isActor} = this.props;
+		if (isActor) {
+			if (result.profilePath) {
+				return (<img src={`${baseProfileUrl}${result.profilePath}`} className="img-thumbnail img-small"/>);
+			}
+			return (<img src={anonymous} className="img-thumbnail img-small"/>)
 		}
-		else{
-			await this.searchMovie(queryString);
+		else {
+			if (result.posterPath) {
+				return (<img src={`${baseProfileUrl}${result.posterPath}`} className="img-thumbnail img-small"/>);
+			}
+			return (<img src={poster} className="img-thumbnail img-small"/>)
 		}
 	}
 
-
-	async searchActor(queryString){
-		// console.log('here is queryString', queryString);
-
-		// let results = await searchActors(queryString);
-		// console.log('here are results: ', results);
-		// this.setState({
-		// 		searchResults: results,
-		// 	});
-
-		//PAULINE TESTING:
-
-		let url = (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com') + '/searchActor';
-		let body = { 
-			actor: queryString
-		};
-
-		axios.post(url, body, config).then((res) =>{
-			//console.log(res);
-			console.log('here are the results of the search for actor: ', res);
-			this.setState({
-				searchResults: res['data']['results'],
-			});
-		}).catch((err) =>{
-			console.log(err);
-			return err;
-		});
-	}
-
-	async searchMovie(queryString){
-		// console.log('here is queryString', queryString);
-
-		// let results = await searchActors(queryString);
-		// console.log('here are results: ', results);
-		// this.setState({
-		// 		searchResults: results,
-		// 	});
-
-		let url = (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com') + '/searchMovie';
-		let body = { 
-			movie: queryString
-		};
-
-		axios.post(url, body, config).then((res) =>{
-			//console.log(res);
-			console.log('here are the results of the search for movie: ', res);
-			this.setState({
-				searchResults: res['data']['results'],
-			});
-		}).catch((err) =>{
-			console.log(err);
-			return err;
-		});
-	}
-
-	renderRow(){
-		console.log('render rows');
-		const { isActor, selector } = this.props;
-		const {searchResults} = this.state;
-		if(!searchResults) {
-			return ('Loading');	
+	selectActor(actor) {
+		return () => {
+			const {hideModal, selector} = this.props;
+			selector(actor.profilePath, actor.name, actor.id);
+			hideModal();
 		}
-		let result = searchResults.map((ele, idx) =>{
-			const {name, title, profilePath, posterPath, id} = ele;
-			return (<Row
-				key={idx}
-				isActor={isActor}
-				name={name || title }
-				imgPath={ profilePath || posterPath}
-				mdbId={id}
-				selector={selector}
-			/>);
-		});
-		return result;
+	}
+
+	selectMovie(movie) {
+		return () => {
+			const {hideModal, selector} = this.props;
+			selector(movie.posterPath, movie.title, movie.id);
+			hideModal();
+		}
+	}
+
+	renderTable() {
+		const {searchResults, selector, isActor} = this.props;
+		let tableRows = searchResults.map(result => (
+			<tr onClick={isActor ? this.selectActor(result) : this.selectMovie(result)}>
+				<td>
+					{result.name || result.title}
+				</td>
+				<td>
+					{this.renderThumbnail(result)}
+				</td>
+			</tr>
+		));
+
+		return (
+			<Table hover>
+				<tbody>
+					{tableRows}
+				</tbody>
+			</Table>
+		);
 	}
 
 	render(){
 		return(
 			<React.Fragment>
-				{this.renderRow()}
+				{this.renderTable()}
 			</React.Fragment>
 		);
 	}

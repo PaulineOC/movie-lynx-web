@@ -5,7 +5,8 @@ import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
 
 import { getRequest } from "../services/requests";
-
+import {Container, Row, Button, Col} from 'react-bootstrap';
+import link from '../images/link.jpg';
 
 require('bootstrap');
 
@@ -24,19 +25,19 @@ class Game extends React.Component{
 				movieId: 0,
 				movieMdbId:111,
 				name: 'Inception',
-				picturePath: `/movie1`,
+				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
 			},
 			origin: {
 				actorId: 0,
 				actorMdbId: 0 ,
 				name: `Ken Watanabe`,
-				picturePath: `/actor0`,
+				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
 			},
 			target: {
 				actorId: 1,
 				actorMdbId: 1,
 				name: 	`Leonardo Di Caprio`,
-				picturePath: `/actor1`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 			},
 		},
 		{
@@ -44,19 +45,19 @@ class Game extends React.Component{
 				movieId: 2,
 				movieMdbId: 222,
 				name: 'Revolutionary Road',
-				picturePath: `/movie2`,
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 			},
 			origin: {
 				actorId: 1,
 				actorMdbId: 1,
 				name: 	`Leonardo Di Caprio`,
-				picturePath: `/actor1`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 			},
 			target: {
 				actorId: 2,
 				actorMdbId: 2,
 				name: 	`Kate Winslet`,
-				picturePath: `/actor2`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 			},
 		},
 		{
@@ -64,19 +65,19 @@ class Game extends React.Component{
 				movieId: 3,
 				movieMdbId: 333,
 				name: 'Revolutionary Road',
-				picturePath: `/movie2`,
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 			},
 			origin: {
 				actorId: 2,
 				actorMdbId: 3,
 				name: 	`Kate Winslet`,
-				picturePath: `/actor2`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 			},
 			target: {
 				actorId: 3,
 				actorMdbId: 3,
 				name: 	`Cameron Diaz`,
-				picturePath: `/actor3`,
+				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
 			},
 		},
 	];
@@ -165,8 +166,8 @@ class Game extends React.Component{
 		const newPuzzle = this.state.puzzle.slice();
 		newPuzzle[groupIndx].origin.name= name;
 		newPuzzle[groupIndx-1].target.name = name;
-		newPuzzle[groupIndx].origin.picturePath= path;
-		newPuzzle[groupIndx-1].target.picturePath = path;
+		newPuzzle[groupIndx].origin.profilePath = path;
+		newPuzzle[groupIndx-1].target.profilePath = path;
 		this.setState({puzzle: newPuzzle});
 	}
 
@@ -185,7 +186,7 @@ class Game extends React.Component{
 	async setMoviePictureAndName(groupIndx, name, path){
 		const newPuzzle = this.state.puzzle.slice();
 		newPuzzle[groupIndx].movie.name= name;
-		newPuzzle[groupIndx].movie.picturePath= path;
+		newPuzzle[groupIndx].movie.posterPath= path;
 		this.setState({puzzle: newPuzzle});	
 	}
 
@@ -193,43 +194,50 @@ class Game extends React.Component{
 		let  toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
-				<ActorColumn
-					key = {`OriginID-${index}`}
-					groupId = {index}
-					isOriginTargetActor = {index===0}
-					actorId={group.origin['actorId']}
-					picturePath = {group.origin['picturePath']}
-					name = {group.origin['name']}
-					setSubmitData= {this.selectActor} 
-				/>
+				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+					<ActorColumn
+						key = {`OriginID-${index}`}
+						groupId = {index}
+						isOriginTargetActor = {index===0}
+						actorId={group.origin['actorId']}
+						picturePath = {group.origin['profilePath']}
+						name = {group.origin['name']}
+						setSubmitData= {this.selectActor} 
+					/>
+				</Col>
 			);
 
 			toDisplay.push(
-				<MovieColumn
-					key = {`MovieId-${index}`}
-					groupId = {index} 
-					movieId = {group.movie['movieId']}
-					picturePath = {group.movie['picturePath']}
-					name = {group.movie['name']}
-					setSubmitData = {this.setMovie}
-				/>
+				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+					<div className="link-container">
+						<img src={link} className="img-fluid" />
+					</div>
+					<MovieColumn
+						key = {`MovieId-${index}`}
+						groupId = {index} 
+						movieId = {group.movie['movieId']}
+						picturePath = {group.movie['posterPath']}
+						name = {group.movie['name']}
+						setSubmitData = {this.setMovie}
+					/>
+				</Col>
 			);
 
-			if(index!==data.length-1){
+			if(index === data.length - 1){
 				toDisplay.push(
-					<ActorColumn
-						key = {`TargetId-${index}`}
-						groupId = {index}
-						isOriginTargetActor = {true}
-						actorId={group.origin['actorId']}
-						picturePath = {group.origin['picturePath']}
-						name = {group.origin['name']}
-					/>
+					<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+						<ActorColumn
+							key = {`TargetId-${index}`}
+							groupId = {index}
+							isOriginTargetActor = {true}
+							actorId={group.target['actorId']}
+							picturePath = {group.target['profilePath']}
+							name = {group.target['name']}
+						/>
+					</Col>
 				);
 			}
 		});
-
-		console.log('here is the data:', toDisplay);
 		return toDisplay;
 	}
 
@@ -262,14 +270,16 @@ class Game extends React.Component{
 	render(){
 		const { puzzle, answer } = this.state;
 		return (
-			<div id="game-dashboard">
-				{this.renderGame(puzzle)}
-				<button 
-					onClick={this.submitAnswer}
-				>
-					Submit answer!
-				</button>
-			</div>
+			<Container fluid={true}>
+				<Row>
+					{this.renderGame(puzzle)}
+				</Row>
+				<Row className="justify-content-md-center">
+					<Button onClick={this.submitAnswer} variant="dark">
+						Submit answer!
+					</Button>
+				</Row>
+			</Container>
 		);
 	}
 }

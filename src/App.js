@@ -4,6 +4,8 @@ import Header from './components/header.jsx';
 import Footer from './components/footer.jsx';
 import Intro from './pages/intro.jsx';
 import Game from './pages/game.jsx';
+import Rules from './components/rules.jsx';
+import {Row, Container} from 'react-bootstrap';
 
 class App extends React.Component{
 
@@ -36,20 +38,21 @@ class App extends React.Component{
       );
     }
     return (
-      <Game 
-          puzzle={this.puzzle} 
-          showAnswer={showAnswer}
-        />
+      <Container fluid={true}>
+        <Rules />
+        <Row>
+          <Game puzzle={this.puzzle} showAnswer={showAnswer}/>
+        </Row>
+      </Container>
     );
   }
 // <Footer/>
-  render(){
-    return(
-      <div>
-        <Header/>
+  render() {
+    return (
+      <React.Fragment>
+        <Header />
         {this.renderApp()}
-       
-      </div>
+      </React.Fragment>
     );
   }
 }

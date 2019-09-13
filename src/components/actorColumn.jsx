@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 import dotenv from 'dotenv';
 
 import "../css/game.css";
-import Modal from './modal';
+import '../css/actorColumn.css';
+import {searchActors} from '../services/helpers';
 import SearchTable from './searchTable';
+import {Card, Button, Container, Row, Col, InputGroup, FormControl, Modal} from 'react-bootstrap';
+import anonymous from '../images/anonymous.png'
 
 dotenv.config();
 
-
-const anonymousPic = "../../public/anonymous.jpg";
+const baseProfileUrl = "https://image.tmdb.org/t/p/original";
 
 class ActorColumn extends React.Component{
 
@@ -19,15 +21,23 @@ class ActorColumn extends React.Component{
 
 		this.state = {
 			input: '',
-			showModal: false,
+			show: false,
+			searchResults: [],
 		}
 		this.renderOriginTarget = this.renderOriginTarget.bind(this);
 		this.renderInputActor = this.renderInputActor.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 
-		this.openModal = this.openModal.bind(this);
-		this.closeModal = this.closeModal.bind(this);
+		this.showModal = this.showModal.bind(this);
+		this.hideModal = this.hideModal.bind(this);
 		this.submitActor = this.submitActor.bind(this);
+		this.searchActorsHandler = this.searchActorsHandler.bind(this);
+	}
+
+	async searchActorsHandler() {
+		const {input} = this.state;
+		const results = await searchActors(input);
+		this.setState({searchResults : results});
 	}
 
 	componentWillMount(){
@@ -37,52 +47,37 @@ class ActorColumn extends React.Component{
 	}
 
 	renderOriginTarget(imgPath, name){
-		let imgStyle = {
-			'backgroundImage': `url('https://image.tmdb.org/t/p/w1280/${imgPath})`};
 		return(
-			<div className="actor-container">
-	          <div className="img-container">
-	            <div
-	              className="img-inner-container actor-profile"
-	              style={imgStyle}>
-	            </div>
-	          </div>
-	          	<hr />
-		         <label className="actor-names">
-		         	{name}
-		         </label>
-        	</div>
+			<Card>
+				<Card.Img variant="top" src={`${baseProfileUrl}${imgPath}`}/>
+				<Card.Body><Card.Title>{name}</Card.Title></Card.Body>
+			</Card>
 		);
 	}
 
 	renderInputActor(imgPath, name){
-		let imgStyle = {
-			'backgroundImage': `url(${imgPath})`};
+		const {input} = this.state;
 		return(
-			<div className="actor-container">
-	          <div className="img-container">
-	            <div
-	              className="img-inner-container actor-profile"
-	              style={imgStyle}>
-	            </div>
-	          </div>
-	          	<hr />
-	          	<input
-	          		type="text"
-	                className="actor-name"
-	                placeholder="Actor/Actress name"
-	                size="20"
-	                onChange={this.handleInput}
-	                onBlur={this.handleInput}
-	                value={this.state.input}
-                />
-	            <button
-	            	className="modalBtn buttons"
-	            	onMouseDown={this.openModal}
-	            >
-	            	Search for Actor/Actress
-	            </button>
-        	</div>
+			<Card>
+				<Card.Img variant="top" src={imgPath ? `${baseProfileUrl}${imgPath}` : anonymous} />
+				<Card.Body className="text-center">
+					<b>{name}</b>
+					<InputGroup className="mb-3">
+						<FormControl 
+							type="text" 
+							placeholder="Name" 
+							onChange={this.handleInput}
+							value={this.state.input}
+							size="sm"
+						/>
+						<InputGroup.Append>
+					     	<Button onMouseDown={this.showModal} variant="outline-secondary" size="sm">	            	
+				            	<i className="fa fa-search"/>
+			            	</Button>
+						</InputGroup.Append>
+					</InputGroup>
+				</Card.Body>
+			</Card>
 		);
 	}
 
@@ -111,43 +106,60 @@ class ActorColumn extends React.Component{
 			);
 
 		}
+		else {
+			return null;
+		}
 	}
 
-	async openModal(){
+	renderModal() {
+		const {input, show, searchResults} = this.state;
+		return (
+			<Modal show={show} size='lg' centered onHide={this.hideModal} onEntering={this.searchActorsHandler} scrollable>
+				<Modal.Header closeButton>
+					<Modal.Title>{input}</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<SearchTable searchResults={searchResults} isActor selector={this.submitActor} hideModal={this.hideModal}>
+					</SearchTable>
+				</Modal.Body>
+			</Modal>
+		);
+	}
+
+	async showModal(){
 		await this.setState({
-				showModal: true,
+			show: true,
 		});
 	}
 
-	async closeModal(){
+	async hideModal(){
 		this.setState({
-			showModal: false,
+			show: false,
 		});
+	}
+
+	async getActors(actorQuery) {
+		return await searchActors(actorQuery);
 	}
 
 	async submitActor(imgPath, name, mdbId){
 		const {setSubmitData, groupId} = this.props;
-		await setSubmitData(groupId, mdbId, name, imgPath );
-
-		await this.setState({input: this.props.name});
-		await this.closeModal();
+		await setSubmitData(groupId, mdbId, name, imgPath);
 	}
 
 	render(){
-		const {isOriginTargetActor, imgPath, name} = this.props;
-		if(this.state.showModal){
-			return this.showModal();
-		}
+		const {isOriginTargetActor, picturePath, name} = this.props;
 		if(isOriginTargetActor){
 			return (
 				<React.Fragment>
-					{this.renderOriginTarget()}
+					{this.renderOriginTarget(picturePath, name)}
 				</React.Fragment>
 			);
 		}
 		return (
 			<React.Fragment>
-				{this.renderInputActor(imgPath, name)}
+				{this.renderInputActor(picturePath, name)}
+				{this.renderModal()}
 			</React.Fragment>
 		);
 	}
@@ -165,19 +177,9 @@ ActorColumn.propTypes = {
 };
 
 ActorColumn.defaultProps = {
-	picturePath: anonymousPic,
+	picturePath: null,
 	name: 'Select an Actor/Actress',
 	setSubmitData: ()=>{},
 };
 
 export default ActorColumn;
-
-/**
-
-
-Thumbnail 
-HR element 
-Input 
-
-*/
-
