@@ -28,9 +28,8 @@ class Rules extends React.Component {
 							Rules
 						</Card.Title>
 						<Card.Text>
-							Chupa chups jelly caramels gummi bears chocolate bonbon carrot cake toffee. 
-				            Gummi bears chocolate bar carrot cake jelly marzipan. 
-				            Dessert chupa chups muffin oat cake lollipop wafer.
+							Movie Lynx is a pop culture game where you have to connect the origin and target actors by listing costars and their movies.
+
 						</Card.Text>	
 					</Card.Body>
 		        </Card>
