@@ -18,7 +18,8 @@ class MovieColumn extends React.Component{
 		this.state = {
 			input: '',
 			show: false,
-			searchResults: []
+			searchResults: [],
+			invalidQuery: false
 		}
 
 		this.renderModal = this.renderModal.bind(this);
@@ -30,8 +31,15 @@ class MovieColumn extends React.Component{
 		this.submitMovie = this.submitMovie.bind(this);
 		this.searchMoviesHandler = this.searchMoviesHandler.bind(this);
 		this.renderMovieColumn = this.renderMovieColumn.bind(this);
+		this.validateInput = this.validateInput.bind(this);
 	}
 
+	async validateInput() {
+		const {input} = this.state;
+		const invalidQuery = input ? false : true;
+		await this.setState({invalidQuery: invalidQuery})
+		return invalidQuery;
+	}
 	async searchMoviesHandler() {
 		const {input} = this.state;
 		const results = await searchMovies(input);
@@ -39,8 +47,10 @@ class MovieColumn extends React.Component{
 	}
 
 	renderInputMovie(imgPath, name){
+		const {alert} = this.props;
+		const {invalidQuery} = this.state;
 		return(
-			<Card border="light">
+			<Card border={alert ? "danger" : "light"}>
 				<Card.Img src={imgPath ? `${basePosterUrl}${imgPath}` : poster}/>
 				<Card.Body className="text-center">
 					<b>{name}</b>
@@ -51,6 +61,7 @@ class MovieColumn extends React.Component{
 							onChange={this.handleInput}
 							value={this.state.input}
 							size="sm"
+							isInvalid={invalidQuery}
 						/>
 						<InputGroup.Append>
 					     	<Button onMouseDown={this.openModal} variant="outline-secondary" size="sm">	            	
@@ -86,6 +97,10 @@ class MovieColumn extends React.Component{
 	}
 
 	async openModal(){
+		let invalidQuery = await this.validateInput();
+		if (invalidQuery) {
+			return;
+		}
 		await this.setState({
 			show: true,
 		});
