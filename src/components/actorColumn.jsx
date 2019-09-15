@@ -26,7 +26,7 @@ class ActorColumn extends React.Component{
 		}
 		this.renderOriginTarget = this.renderOriginTarget.bind(this);
 		this.renderInputActor = this.renderInputActor.bind(this);
-		this.renderFeedback = this.renderFeedback.bind(this);
+		this.renderPostGameData = this.renderPostGameData.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 
 		this.showModal = this.showModal.bind(this);
@@ -84,7 +84,7 @@ class ActorColumn extends React.Component{
 		);
 	}
 
-	renderFeedback(isSolution, imgPath, name, isCorrect, explanation){
+	renderPostGameData(isSolution, imgPath, name, isCorrect, explanation){
 		return(
 			<Card bg={isSolution ? "secondary" : (isCorrect ? "success" : "danger")}>
 				<Card.Img variant="top" src={`${baseProfileUrl}${imgPath}`}/>
@@ -179,7 +179,7 @@ class ActorColumn extends React.Component{
 		else if(isFeedback){
 			return (
 				<React.Fragment>
-					{this.renderFeedback(isSolution, picturePath, name, isCorrect, explanation)}
+					{this.renderPostGameData(isSolution, picturePath, name, isCorrect, explanation)}
 				</React.Fragment>
 			);
 		}

@@ -23,7 +23,7 @@ class MovieColumn extends React.Component{
 
 		this.renderModal = this.renderModal.bind(this);
 		this.renderInputMovie = this.renderInputMovie.bind(this);
-		this.renderFeedback = this.renderFeedback.bind(this);
+		this.renderPostGameData = this.renderPostGameData.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 
 		this.openModal = this.openModal.bind(this);
@@ -64,7 +64,7 @@ class MovieColumn extends React.Component{
 		);
 	}
 
-	renderFeedback(isSolution = false, imgPath, name, isCorrect, explanation){
+	renderPostGameData(isSolution = false, imgPath, name, isCorrect, explanation){
 		return(
 			<Card bg={isSolution ? "secondary" : (isCorrect ? "success" : "danger")}>
 				<Card.Img src={imgPath ? `${basePosterUrl}${imgPath}` : poster}/>
@@ -125,7 +125,7 @@ class MovieColumn extends React.Component{
 		if(isFeedback){
 			return (
 				<React.Fragment>
-					{this.renderFeedback(isSolution, picturePath, name, isCorrect, explanation)}
+					{this.renderPostGameData(isSolution, picturePath, name, isCorrect, explanation)}
 				</React.Fragment>
 			);
 		}
