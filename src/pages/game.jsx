@@ -165,7 +165,7 @@ class Game extends React.Component{
 			movie: {
 				movieId: 0,
 				movieMdbId:111,
-				name: 'DREAMS AND NIGHTMARES',
+				name: 'Inception',
 				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
 				correct: true,
 				explanation: "This movie is correct",
@@ -173,13 +173,13 @@ class Game extends React.Component{
 			origin: {
 				actorId: 0,
 				actorMdbId: 0 ,
-				name: `Ken`,
+				name: `Ken Watanabe`,
 				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
 			},
 			target: {
 				actorId: 1,
 				actorMdbId: 1,
-				name: 	`Leo `,
+				name: 	`Leonardo Di Caprio `,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 				correct: false,
 				explanation: "This actor is wrong?",
@@ -189,7 +189,7 @@ class Game extends React.Component{
 			movie: {
 				movieId: 2,
 				movieMdbId: 222,
-				name: 'UNHAPPY MARRIAGE',
+				name: 'Revolutionary Road',
 				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 				correct: true,
 				explanation: "This movie is correct!",
@@ -198,7 +198,7 @@ class Game extends React.Component{
 			origin: {
 				actorId: 1,
 				actorMdbId: 1,
-				name: 	`Leo`,
+				name: 	`Leonardo Di Caprio`,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 				correct: false,
 				explanation: "Actor is wrong",
@@ -216,15 +216,15 @@ class Game extends React.Component{
 			movie: {
 				movieId: 3,
 				movieMdbId: 333,
-				name: 'SUBURBAN PROBLEMS',
-				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				name: 'The Holiday',
+				posterPath: `/ixNtpuq8OVp4IckgzkSJIflFDkw.jpg`,
 				correct: false,
 				explanation: "This movie is wrong",
 			},
 			origin: {
 				actorId: 2,
 				actorMdbId: 3,
-				name: 	`Katey`,
+				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 				correct: false,
 				explanation: "Since movie is wrong, actor is wrong",
@@ -232,7 +232,7 @@ class Game extends React.Component{
 			target: {
 				actorId: 3,
 				actorMdbId: 3,
-				name: 	`Cammy`,
+				name: 	`Cameron Diaz`,
 				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
 			},
 		},
