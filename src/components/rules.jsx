@@ -1,6 +1,8 @@
 import React from 'react';
-import '../css/rules.css';
 import {Row, Container, Col, Card} from 'react-bootstrap';
+
+import '../css/rules.css';
+import example from '../images/example.png';
 
 class Rules extends React.Component {
 
@@ -28,10 +30,21 @@ class Rules extends React.Component {
 							Rules
 						</Card.Title>
 						<Card.Text>
-							Chupa chups jelly caramels gummi bears chocolate bonbon carrot cake toffee. 
-				            Gummi bears chocolate bar carrot cake jelly marzipan. 
-				            Dessert chupa chups muffin oat cake lollipop wafer.
+							Movie Lynx is a pop culture game where you have to connect the origin and target actors by listing costars and their movies. No repeats allowed! To explain the example below:
+								<ul>
+									<li>
+										Ken Watanabe and Leonardo Di Caprio were both in <em>Inception</em> 
+									</li>
+									<li>
+										Leonardo Di Caprio and Kate Winslet were both in <em>Revolutionary Road</em>
+									</li>
+									<li>
+										Kate Winslet and Cameron Diaz were both in <em>The Holiday</em>
+									</li>
+								</ul>
 						</Card.Text>	
+						<Card.Img variant="bottom" thumbnail src={example}/>
+
 					</Card.Body>
 		        </Card>
 			); 
