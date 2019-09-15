@@ -278,7 +278,7 @@ class Game extends React.Component{
 			showFeedback: false,
 			isSolution: false,
 		};
-		this.renderGame = this.renderGame.bind(this);
+		this.renderGameData = this.renderGameData.bind(this);
 		this.renderButtons = this.renderButtons.bind(this);
 
 		this.selectActor = this.selectActor.bind(this);
@@ -350,7 +350,7 @@ class Game extends React.Component{
 		this.setState({puzzle: newPuzzle});	
 	}
 
-	renderGame(data, showFeedback, isSolution){
+	renderGameData(data, showFeedback, isSolution){
 		let toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
@@ -445,7 +445,6 @@ class Game extends React.Component{
 	}
 
 	showSolution(){
-
 		//TODO: remove the setting of ANSWER field when using real data: 
 		this.setState({
 			isSolution: true,
@@ -486,7 +485,7 @@ class Game extends React.Component{
 		return (
 			<Container fluid={true}>
 				<Row>
-					{this.renderGame(data, showFeedback, isSolution)}
+					{this.renderGameData(data, showFeedback, isSolution)}
 				</Row>
 				<Row className="justify-content-md-center">
 					{this.renderButtons(isSolution, showFeedback)}
