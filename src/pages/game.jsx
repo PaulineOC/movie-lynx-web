@@ -240,7 +240,9 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-		console.log('in constructor');
+
+		//TODO: the getting of the puzzle and setting state will be moved to componentDidMount eventually and reference correct results
+
 		const originalPuzzle = this.puzzle.splice();
 		let firstActor = this.puzzle[0].origin;
 		let lastActor = this.puzzle[this.puzzle.length-1].target;
@@ -295,6 +297,7 @@ class Game extends React.Component{
 	}
 
 	async componentDidMount(){
+
 			//make a get request to get puzzle
 			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/';
 			let config = {
@@ -303,10 +306,6 @@ class Game extends React.Component{
 					crossdomain: true,
 				}
 			};
-			//let testPuzzle = await getRequest( url, {}, config);
-			//console.log('here are the results of getting puzzle: ');
-			//console.log(testPuzzle);
-		//set state correctly to be the result puzzle 
 	}
 
 	async selectActor(groupIndx, mdId, name, path){
@@ -424,9 +423,8 @@ class Game extends React.Component{
 		// 	const {data} = res;
 		// 	//console.log(res);
 		// 	console.log('here are the results from submitting puzzle', data);
-		// 	//TODO: change this to the correct "data" var, not testPuzzle 
 		// 	this.setState({
-		// 		puzzle : testAns,
+		// 		puzzle : data,
 		// 		showFeedback: true,
 		// 	});
 		// }).catch((err) =>{
@@ -435,6 +433,7 @@ class Game extends React.Component{
 		// });
 
 		/*
+			TODO
 			If connecting to the backend, please move this next setState to the THEN of the axios.post! 
 			Please change the variable this.testAns to res.data 
 		*/
@@ -445,7 +444,7 @@ class Game extends React.Component{
 	}
 
 	showSolution(){
-		//TODO: remove the setting of ANSWER field when using real data: 
+		//TODO: remove line 451 completely to use real data that will be set in componentDidMount
 		this.setState({
 			isSolution: true,
 			answer: this.testSolution,
@@ -466,14 +465,14 @@ class Game extends React.Component{
 		}
 		else if(showFeedback){
 			return(
-			<Button onClick={this.showSolution} variant="dark">
+			<Button onClick={this.showSolution} variant="secondary">
 				Show original answer!
 			</Button>
 		);
 
 		}
 		return(
-			<Button onClick={this.submitAnswer} variant="warning">
+			<Button onClick={this.submitAnswer} variant="primary">
 				Submit answer!
 			</Button>
 		);
