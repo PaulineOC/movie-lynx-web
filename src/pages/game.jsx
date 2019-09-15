@@ -82,10 +82,166 @@ class Game extends React.Component{
 		},
 	];
 
+	testAns = [
+		{
+			movie: {
+				movieId: 0,
+				movieMdbId:111,
+				name: 'Inception',
+				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
+				correct: true,
+				explanation: "This movie is correct",
+			},
+			origin: {
+				actorId: 0,
+				actorMdbId: 0 ,
+				name: `Ken Watanabe`,
+				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
+			},
+			target: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leonardo Di Caprio`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "This actor is wrong?",
+			},
+		},
+		{
+			movie: {
+				movieId: 2,
+				movieMdbId: 222,
+				name: 'Revolutionary Road',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: true,
+				explanation: "This movie is correct!",
+
+			},
+			origin: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leonardo Di Caprio`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "Actor is wrong",
+			},
+			target: {
+				actorId: 2,
+				actorMdbId: 2,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: true,
+				explanation: "Actor is correct! ",
+			},
+		},
+		{
+			movie: {
+				movieId: 3,
+				movieMdbId: 333,
+				name: 'Revolutionary Road',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: false,
+				explanation: "This movie is wrong",
+			},
+			origin: {
+				actorId: 2,
+				actorMdbId: 3,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: false,
+				explanation: "Since movie is wrong, actor is wrong",
+			},
+			target: {
+				actorId: 3,
+				actorMdbId: 3,
+				name: 	`Cameron Diaz`,
+				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
+			},
+		},
+	];
+
+	testSolution = [
+		{
+			movie: {
+				movieId: 0,
+				movieMdbId:111,
+				name: 'DREAMS AND NIGHTMARES',
+				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
+				correct: true,
+				explanation: "This movie is correct",
+			},
+			origin: {
+				actorId: 0,
+				actorMdbId: 0 ,
+				name: `Ken`,
+				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
+			},
+			target: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leo `,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "This actor is wrong?",
+			},
+		},
+		{
+			movie: {
+				movieId: 2,
+				movieMdbId: 222,
+				name: 'UNHAPPY MARRIAGE',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: true,
+				explanation: "This movie is correct!",
+
+			},
+			origin: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leo`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "Actor is wrong",
+			},
+			target: {
+				actorId: 2,
+				actorMdbId: 2,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: true,
+				explanation: "Actor is correct! ",
+			},
+		},
+		{
+			movie: {
+				movieId: 3,
+				movieMdbId: 333,
+				name: 'SUBURBAN PROBLEMS',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: false,
+				explanation: "This movie is wrong",
+			},
+			origin: {
+				actorId: 2,
+				actorMdbId: 3,
+				name: 	`Katey`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: false,
+				explanation: "Since movie is wrong, actor is wrong",
+			},
+			target: {
+				actorId: 3,
+				actorMdbId: 3,
+				name: 	`Cammy`,
+				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
+			},
+		},
+	];
+
 	constructor(props){
 		super(props);
-		const copy = this.puzzle.splice();
-
+		console.log('in constructor');
+		const originalPuzzle = this.puzzle.splice();
 		let firstActor = this.puzzle[0].origin;
 		let lastActor = this.puzzle[this.puzzle.length-1].target;
 
@@ -118,19 +274,24 @@ class Game extends React.Component{
 		this.state = {
 			puzzle: puzzleEmptied,
 			showAnswer: this.props.showAnswer,
-			answer: copy,
-			answerCorrect: null,
+			answer: originalPuzzle,
+			showFeedback: false,
+			isSolution: false,
 		};
 		this.renderGame = this.renderGame.bind(this);
+		this.renderButtons = this.renderButtons.bind(this);
+
 		this.selectActor = this.selectActor.bind(this);
 		this.setActorMdId = this.setActorMdId.bind(this);
 		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
 
-		this.setMovie= this.setMovie.bind(this);
+		this.setMovie = this.setMovie.bind(this);
 		this.setMovieMdId = this.setMovieMdId.bind(this);
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
 
-		this.submitAnswer=this.submitAnswer.bind(this);
+		this.submitAnswer = this.submitAnswer.bind(this);
+		this.showSolution = this.showSolution.bind(this);
+		this.restartGame = this.restartGame.bind(this);
 	}
 
 	async componentDidMount(){
@@ -147,7 +308,6 @@ class Game extends React.Component{
 			//console.log(testPuzzle);
 		//set state correctly to be the result puzzle 
 	}
-
 
 	async selectActor(groupIndx, mdId, name, path){
 		await this.setActorMdId(groupIndx, mdId);
@@ -190,8 +350,8 @@ class Game extends React.Component{
 		this.setState({puzzle: newPuzzle});	
 	}
 
-	renderGame(data){
-		let  toDisplay = [];
+	renderGame(data, showFeedback, isSolution){
+		let toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
 				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
@@ -202,11 +362,15 @@ class Game extends React.Component{
 						actorId={group.origin['actorId']}
 						picturePath = {group.origin['profilePath']}
 						name = {group.origin['name']}
-						setSubmitData= {this.selectActor} 
+						setSubmitData= {this.selectActor}
+
+						isFeedback={showFeedback}
+						isSolution={isSolution}
+						isCorrect={group.origin.correct ? group.origin.correct : null}
+						explanation={group.origin.explanation ? group.origin.explanation : null}
 					/>
 				</Col>
 			);
-
 			toDisplay.push(
 				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
 					<div className="link-container">
@@ -219,10 +383,14 @@ class Game extends React.Component{
 						picturePath = {group.movie['posterPath']}
 						name = {group.movie['name']}
 						setSubmitData = {this.setMovie}
+
+						isFeedback={showFeedback}
+						isSolution={isSolution}
+						isCorrect={group.movie.correct ? group.movie.correct : null}
+						explanation={group.movie.explanation ? group.movie.explanation : null}
 					/>
 				</Col>
 			);
-
 			if(index === data.length - 1){
 				toDisplay.push(
 					<Col xs={true} sm={true} md={true} lg={true} xl={true}>
@@ -233,6 +401,7 @@ class Game extends React.Component{
 							actorId={group.target['actorId']}
 							picturePath = {group.target['profilePath']}
 							name = {group.target['name']}
+							isSolution={isSolution}
 						/>
 					</Col>
 				);
@@ -242,42 +411,85 @@ class Game extends React.Component{
 	}
 
 	async submitAnswer(){
-
-
 		const {puzzle} = this.state;
-		console.log('here is final state of the game?');
-		//console.log(puzzle);
 		let url = (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com') + '/check';
 
 		let body = {
 			submittedPuzzle: puzzle,
 		}
 
-		axios.post(url, body, config).then((res) =>{
-			const {data} = res;
-			//console.log(res);
-			console.log('here are the results from submitting puzzle', data);
-			this.setState({
-				answerCorrect: res,
-			});
-		}).catch((err) =>{
-			console.log(err);
-			return err;
-		});
+		//TODO: To connect to the backend, please uncomment lines below: 
 
+		// axios.post(url, body, config).then((res) =>{
+		// 	const {data} = res;
+		// 	//console.log(res);
+		// 	console.log('here are the results from submitting puzzle', data);
+		// 	//TODO: change this to the correct "data" var, not testPuzzle 
+		// 	this.setState({
+		// 		puzzle : testAns,
+		// 		showFeedback: true,
+		// 	});
+		// }).catch((err) =>{
+		// 	console.log(err);
+		// 	return err;
+		// });
+
+		/*
+			If connecting to the backend, please move this next setState to the THEN of the axios.post! 
+			Please change the variable this.testAns to res.data 
+		*/
+		this.setState({
+				puzzle : this.testAns,
+				showFeedback: true,
+		});
+	}
+
+	showSolution(){
+
+		//TODO: remove the setting of ANSWER field when using real data: 
+		this.setState({
+			isSolution: true,
+			answer: this.testSolution,
+		});
+	}
+
+	restartGame(){
+		window.location.reload();
+	}
+
+	renderButtons(isSolution, showFeedback){
+		if(isSolution){
+			return(
+				<Button onClick={this.restartGame} variant="danger">
+					Restart Game
+				</Button>
+			);
+		}
+		else if(showFeedback){
+			return(
+			<Button onClick={this.showSolution} variant="dark">
+				Show original answer!
+			</Button>
+		);
+
+		}
+		return(
+			<Button onClick={this.submitAnswer} variant="warning">
+				Submit answer!
+			</Button>
+		);
 	}
 
 	render(){
-		const { puzzle, answer } = this.state;
+		const { puzzle, answer, showFeedback, isSolution } = this.state;
+		let data = isSolution ? answer : puzzle;
 		return (
 			<Container fluid={true}>
 				<Row>
-					{this.renderGame(puzzle)}
+					{this.renderGame(data, showFeedback, isSolution)}
 				</Row>
 				<Row className="justify-content-md-center">
-					<Button onClick={this.submitAnswer} variant="dark">
-						Submit answer!
-					</Button>
+					{this.renderButtons(isSolution, showFeedback)}
 				</Row>
 			</Container>
 		);

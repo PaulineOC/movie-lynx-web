@@ -26,6 +26,7 @@ class ActorColumn extends React.Component{
 		}
 		this.renderOriginTarget = this.renderOriginTarget.bind(this);
 		this.renderInputActor = this.renderInputActor.bind(this);
+		this.renderFeedback = this.renderFeedback.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 
 		this.showModal = this.showModal.bind(this);
@@ -46,11 +47,13 @@ class ActorColumn extends React.Component{
 		});
 	}
 
-	renderOriginTarget(imgPath, name){
+	renderOriginTarget(imgPath, name, isSolution){
 		return(
-			<Card>
+			<Card bg={isSolution ? "secondary" : "light"}>
 				<Card.Img variant="top" src={`${baseProfileUrl}${imgPath}`}/>
-				<Card.Body><Card.Title>{name}</Card.Title></Card.Body>
+				<Card.Body>
+					<Card.Title>{name}</Card.Title>
+				</Card.Body>
 			</Card>
 		);
 	}
@@ -58,7 +61,7 @@ class ActorColumn extends React.Component{
 	renderInputActor(imgPath, name){
 		const {input} = this.state;
 		return(
-			<Card>
+			<Card bg="light">
 				<Card.Img variant="top" src={imgPath ? `${baseProfileUrl}${imgPath}` : anonymous} />
 				<Card.Body className="text-center">
 					<b>{name}</b>
@@ -80,6 +83,22 @@ class ActorColumn extends React.Component{
 			</Card>
 		);
 	}
+
+	renderFeedback(isSolution, imgPath, name, isCorrect, explanation){
+		return(
+			<Card bg={isSolution ? "secondary" : (isCorrect ? "success" : "danger")}>
+				<Card.Img variant="top" src={`${baseProfileUrl}${imgPath}`}/>
+				<Card.Body>
+					<Card.Title>{name}</Card.Title>
+					{
+						!isSolution && 
+						<Card.Text>{explanation}</Card.Text>
+					}
+				</Card.Body>
+			</Card>
+		);
+	}
+
 
 	handleInput(e){
 		const { target : { value } } = e;
@@ -148,38 +167,56 @@ class ActorColumn extends React.Component{
 	}
 
 	render(){
-		const {isOriginTargetActor, picturePath, name} = this.props;
+		const {isOriginTargetActor, picturePath, name, isFeedback, isSolution, isCorrect, explanation} = this.props;
+		
 		if(isOriginTargetActor){
 			return (
 				<React.Fragment>
-					{this.renderOriginTarget(picturePath, name)}
+					{this.renderOriginTarget(picturePath, name, isSolution)}
 				</React.Fragment>
 			);
 		}
-		return (
-			<React.Fragment>
-				{this.renderInputActor(picturePath, name)}
-				{this.renderModal()}
-			</React.Fragment>
-		);
+		else if(isFeedback){
+			return (
+				<React.Fragment>
+					{this.renderFeedback(isSolution, picturePath, name, isCorrect, explanation)}
+				</React.Fragment>
+			);
+		}
+		else {
+			return (
+				<React.Fragment>
+					{this.renderInputActor(picturePath, name)}
+					{this.renderModal()}
+				</React.Fragment>
+			);
+		}
 	}
 
 }
 
-
 ActorColumn.propTypes = {
-  groupId: PropTypes.number.isRequired,
-  isOriginTargetActor: PropTypes.bool,
-  actorId: PropTypes.number,
-  picturePath: PropTypes.string,
-  name: PropTypes.string,
-  setSubmitData: PropTypes.func,
+	groupId: PropTypes.number.isRequired,
+	isOriginTargetActor: PropTypes.bool,
+	actorId: PropTypes.number,
+	picturePath: PropTypes.string,
+	name: PropTypes.string,
+	setSubmitData: PropTypes.func,
+	isFeedback: PropTypes.bool,
+	isSolution: PropTypes.bool,
+	correct: PropTypes.bool,
+	explanation: PropTypes.string,
 };
 
 ActorColumn.defaultProps = {
 	picturePath: null,
 	name: 'Select an Actor/Actress',
 	setSubmitData: ()=>{},
+	isFeedback: false,
+	isSolution: null,
+	correct: null,
+	explanation: '',
+
 };
 
 export default ActorColumn;
