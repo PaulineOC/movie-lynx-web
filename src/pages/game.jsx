@@ -206,8 +206,8 @@ class Game extends React.Component{
 		if (actorIdx === 0 || actorIdx === newPuzzle.length) {
 			return;
 		}
-		newPuzzle[actorIdx].origin = alert;
-		newPuzzle[actorIdx-1].target = alert;
+		newPuzzle[actorIdx].origin.alert = alert;
+		newPuzzle[actorIdx-1].target.alert = alert;
 		this.setState({puzzle: newPuzzle});
 	}
 
