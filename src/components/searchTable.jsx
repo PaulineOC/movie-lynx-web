@@ -88,7 +88,6 @@ class SearchTable extends React.Component{
 }
 
 SearchTable.propTypes = {
-	queryString: PropTypes.string.isRequired,  
 	isActor: PropTypes.bool.isRequired,
 	selector: PropTypes.func,
 };
