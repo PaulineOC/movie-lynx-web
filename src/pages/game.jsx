@@ -96,18 +96,21 @@ class Game extends React.Component{
 					movieMdbId:null,
 					name: null,
 					picturePath: null,
+					alert: false,
 				},
 				origin: {
 					actorId: null,
 					actorMdbId: null,
 					name: null,
 					picturePath: null,
+					alert: false,
 				},
 				target: {
 					actorId: null,
 					actorMdbId: null,
 					name: null,
 					picturePath: null,
+					alert: false,
 				},
 			};
 		});
@@ -131,6 +134,8 @@ class Game extends React.Component{
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
 
 		this.submitAnswer=this.submitAnswer.bind(this);
+		this.setAlertForActor = this.setAlertForActor.bind(this);
+		this.setAlertForMovie = this.setAlertForMovie.bind(this);
 	}
 
 	async componentDidMount(){
@@ -152,7 +157,7 @@ class Game extends React.Component{
 	async selectActor(groupIndx, mdId, name, path){
 		await this.setActorMdId(groupIndx, mdId);
 		await this.setActorPictureAndName(groupIndx, name, path);
-		console.log('done with select actor here state:', this.state);
+		await this.setAlertForActor(groupIndx, false);
 	}
 
 	async setActorMdId(groupIndx, mdId){
@@ -174,7 +179,7 @@ class Game extends React.Component{
 	async setMovie(groupIndx, mdId, name, path){
 		await this.setMovieMdId(groupIndx, mdId);
 		await this.setMoviePictureAndName(groupIndx, name, path);
-		console.log('done with select movie here state:', this.state);
+		await this.setAlertForMovie(groupIndx, false);
 	}
 
 	async setMovieMdId(groupIndx, mdId){
@@ -190,6 +195,22 @@ class Game extends React.Component{
 		this.setState({puzzle: newPuzzle});	
 	}
 
+	async setAlertForMovie(groupIndx, alert) {
+		const newPuzzle = this.state.puzzle.slice();
+		newPuzzle[groupIndx].movie.alert = alert;
+		this.setState({puzzle: newPuzzle});
+	}
+
+	async setAlertForActor(actorIdx, alert) {
+		const newPuzzle = this.state.puzzle.slice();
+		if (actorIdx === 0 || actorIdx === newPuzzle.length) {
+			return;
+		}
+		newPuzzle[actorIdx].origin.alert = alert;
+		newPuzzle[actorIdx-1].target.alert = alert;
+		this.setState({puzzle: newPuzzle});
+	}
+
 	renderGame(data){
 		let  toDisplay = [];
 		data.forEach((group, index) =>{
@@ -202,7 +223,8 @@ class Game extends React.Component{
 						actorId={group.origin['actorId']}
 						picturePath = {group.origin['profilePath']}
 						name = {group.origin['name']}
-						setSubmitData= {this.selectActor} 
+						setSubmitData= {this.selectActor}
+						alert={group.origin.alert} 
 					/>
 				</Col>
 			);
@@ -219,6 +241,7 @@ class Game extends React.Component{
 						picturePath = {group.movie['posterPath']}
 						name = {group.movie['name']}
 						setSubmitData = {this.setMovie}
+						alert={group.movie.alert}
 					/>
 				</Col>
 			);
@@ -233,6 +256,7 @@ class Game extends React.Component{
 							actorId={group.target['actorId']}
 							picturePath = {group.target['profilePath']}
 							name = {group.target['name']}
+							alert={group.movie.alert}
 						/>
 					</Col>
 				);
@@ -242,11 +266,30 @@ class Game extends React.Component{
 	}
 
 	async submitAnswer(){
+		let {puzzle} = this.state;
 
-
-		const {puzzle} = this.state;
-		console.log('here is final state of the game?');
-		//console.log(puzzle);
+		// Check if every element was assigned
+		let alertFound = false;
+		puzzle.forEach((group, idx) => {
+			if (!group.origin.actorMdbId && idx > 0) {
+				group.origin.alert = true;
+				puzzle[idx - 1].target. alert = true;
+				alertFound = true;
+			}
+			if (!group.target.actorMdbId && idx < puzzle.length-1) {
+				group.target.alert = true;
+				puzzle[idx + 1].origin.alert = true;
+				alertFound = true;
+			}
+			if (!group.movie.movieMdbId) {
+				group.movie.alert = true;
+				alertFound = true;	
+			}
+		});
+		if (alertFound) {
+			this.setState({puzzle: puzzle});
+			return;
+		}
 		let url = (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com') + '/check';
 
 		let body = {
@@ -255,13 +298,10 @@ class Game extends React.Component{
 
 		axios.post(url, body, config).then((res) =>{
 			const {data} = res;
-			//console.log(res);
-			console.log('here are the results from submitting puzzle', data);
 			this.setState({
 				answerCorrect: res,
 			});
 		}).catch((err) =>{
-			console.log(err);
 			return err;
 		});
 
