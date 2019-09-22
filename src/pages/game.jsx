@@ -108,8 +108,6 @@ class Game extends React.Component{
 	async componentDidMount(){
 			
 		const puzzle = await getPuzzle();
-
-		console.log(puzzle);
 		const copy = puzzle.splice();
 		let firstActor = puzzle[0].origin;
 		let lastActor = puzzle[puzzle.length-1].target;
