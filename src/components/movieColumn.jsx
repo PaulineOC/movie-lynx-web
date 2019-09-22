@@ -138,7 +138,6 @@ class MovieColumn extends React.Component{
 
 MovieColumn.propTypes = {
 	groupId: PropTypes.number.isRequired,
-	movieId: PropTypes.number,
 	name: PropTypes.string,
 	setSubmitData: PropTypes.func,
 };

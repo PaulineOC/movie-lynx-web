@@ -4,7 +4,7 @@ import axios from 'axios';
 import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
 
-import { getRequest } from "../services/requests";
+import {getPuzzle} from '../services/helpers';
 import {Container, Row, Button, Col} from 'react-bootstrap';
 import link from '../images/link.jpg';
 
@@ -84,13 +84,35 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-		const copy = this.puzzle.splice();
 
-		let firstActor = this.puzzle[0].origin;
-		let lastActor = this.puzzle[this.puzzle.length-1].target;
+		this.state = {
+			puzzle: [],
+			showAnswer: this.props.showAnswer,
+			answer: [],
+			answerCorrect: null,
+		};
+		this.renderGame = this.renderGame.bind(this);
+		this.selectActor = this.selectActor.bind(this);
+		this.setActorMdId = this.setActorMdId.bind(this);
+		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
 
-		let puzzleEmptied = this.puzzle.map((item, indx) =>{
-			return {
+		this.setMovie= this.setMovie.bind(this);
+		this.setMovieMdId = this.setMovieMdId.bind(this);
+		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
+
+		this.submitAnswer=this.submitAnswer.bind(this);
+		this.setAlertForActor = this.setAlertForActor.bind(this);
+		this.setAlertForMovie = this.setAlertForMovie.bind(this);
+	}
+
+	async componentDidMount(){
+			
+		const puzzle = await getPuzzle();
+		const copy = puzzle.splice();
+		let firstActor = puzzle[0].origin;
+		let lastActor = puzzle[puzzle.length-1].target;
+		const puzzleEmptied = puzzle.map((item, indx) =>{
+		return {
 				movie: {
 					movieId: indx,
 					movieMdbId:null,
@@ -114,43 +136,16 @@ class Game extends React.Component{
 				},
 			};
 		});
-
 		puzzleEmptied[0].origin = firstActor;
 		puzzleEmptied[puzzleEmptied.length-1].target = lastActor;
 
-		this.state = {
+		this.setState(
+		{
 			puzzle: puzzleEmptied,
 			showAnswer: this.props.showAnswer,
 			answer: copy,
 			answerCorrect: null,
-		};
-		this.renderGame = this.renderGame.bind(this);
-		this.selectActor = this.selectActor.bind(this);
-		this.setActorMdId = this.setActorMdId.bind(this);
-		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
-
-		this.setMovie= this.setMovie.bind(this);
-		this.setMovieMdId = this.setMovieMdId.bind(this);
-		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
-
-		this.submitAnswer=this.submitAnswer.bind(this);
-		this.setAlertForActor = this.setAlertForActor.bind(this);
-		this.setAlertForMovie = this.setAlertForMovie.bind(this);
-	}
-
-	async componentDidMount(){
-			//make a get request to get puzzle
-			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/';
-			let config = {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-					crossdomain: true,
-				}
-			};
-			//let testPuzzle = await getRequest( url, {}, config);
-			//console.log('here are the results of getting puzzle: ');
-			//console.log(testPuzzle);
-		//set state correctly to be the result puzzle 
+		});
 	}
 
 
@@ -215,12 +210,11 @@ class Game extends React.Component{
 		let  toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
-				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+				<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`origin-${index}`}>
 					<ActorColumn
 						key = {`OriginID-${index}`}
 						groupId = {index}
 						isOriginTargetActor = {index===0}
-						actorId={group.origin['actorId']}
 						picturePath = {group.origin['profilePath']}
 						name = {group.origin['name']}
 						setSubmitData= {this.selectActor}
@@ -230,14 +224,13 @@ class Game extends React.Component{
 			);
 
 			toDisplay.push(
-				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+				<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`movie-${index}`}>
 					<div className="link-container">
 						<img src={link} className="img-fluid" />
 					</div>
 					<MovieColumn
 						key = {`MovieId-${index}`}
 						groupId = {index} 
-						movieId = {group.movie['movieId']}
 						picturePath = {group.movie['posterPath']}
 						name = {group.movie['name']}
 						setSubmitData = {this.setMovie}
@@ -248,12 +241,11 @@ class Game extends React.Component{
 
 			if(index === data.length - 1){
 				toDisplay.push(
-					<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+					<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`target-${index}`}>
 						<ActorColumn
 							key = {`TargetId-${index}`}
 							groupId = {index}
 							isOriginTargetActor = {true}
-							actorId={group.target['actorId']}
 							picturePath = {group.target['profilePath']}
 							name = {group.target['name']}
 							alert={group.movie.alert}
