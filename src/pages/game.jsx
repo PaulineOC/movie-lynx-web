@@ -4,7 +4,7 @@ import axios from 'axios';
 import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
 
-import { getRequest } from "../services/requests";
+import {getPuzzle} from '../services/helpers';
 import {Container, Row, Button, Col} from 'react-bootstrap';
 import link from '../images/link.jpg';
 
@@ -240,40 +240,65 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-
 		//TODO: the getting of the puzzle and setting state will be moved to componentDidMount eventually and reference correct results
-
 		const originalPuzzle = this.puzzle.splice();
 		let firstActor = this.puzzle[0].origin;
 		let lastActor = this.puzzle[this.puzzle.length-1].target;
+		this.state = {
+			puzzle: [],
+			showAnswer: this.props.showAnswer,
+			answer: [],
+			answerCorrect: null,
+		};
+		this.renderGame = this.renderGame.bind(this);
+		this.selectActor = this.selectActor.bind(this);
+		this.setActorMdId = this.setActorMdId.bind(this);
+		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
 
-		let puzzleEmptied = this.puzzle.map((item, indx) =>{
-			return {
+		this.setMovie= this.setMovie.bind(this);
+		this.setMovieMdId = this.setMovieMdId.bind(this);
+		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
+		this.submitAnswer=this.submitAnswer.bind(this);
+		this.setAlertForActor = this.setAlertForActor.bind(this);
+		this.setAlertForMovie = this.setAlertForMovie.bind(this);
+	}
+
+	async componentDidMount(){
+			
+		const puzzle = await getPuzzle();
+		const copy = puzzle.splice();
+		let firstActor = puzzle[0].origin;
+		let lastActor = puzzle[puzzle.length-1].target;
+		const puzzleEmptied = puzzle.map((item, indx) =>{
+		  return {
 				movie: {
 					movieId: indx,
 					movieMdbId:null,
 					name: null,
 					picturePath: null,
+					alert: false,
 				},
 				origin: {
 					actorId: null,
 					actorMdbId: null,
 					name: null,
 					picturePath: null,
+					alert: false,
 				},
 				target: {
 					actorId: null,
 					actorMdbId: null,
 					name: null,
 					picturePath: null,
+					alert: false,
 				},
 			};
 		});
-
 		puzzleEmptied[0].origin = firstActor;
 		puzzleEmptied[puzzleEmptied.length-1].target = lastActor;
 
-		this.state = {
+		this.setState(
+		{
 			puzzle: puzzleEmptied,
 			showAnswer: this.props.showAnswer,
 			answer: originalPuzzle,
@@ -311,7 +336,7 @@ class Game extends React.Component{
 	async selectActor(groupIndx, mdId, name, path){
 		await this.setActorMdId(groupIndx, mdId);
 		await this.setActorPictureAndName(groupIndx, name, path);
-		console.log('done with select actor here state:', this.state);
+		await this.setAlertForActor(groupIndx, false);
 	}
 
 	async setActorMdId(groupIndx, mdId){
@@ -333,7 +358,7 @@ class Game extends React.Component{
 	async setMovie(groupIndx, mdId, name, path){
 		await this.setMovieMdId(groupIndx, mdId);
 		await this.setMoviePictureAndName(groupIndx, name, path);
-		console.log('done with select movie here state:', this.state);
+		await this.setAlertForMovie(groupIndx, false);
 	}
 
 	async setMovieMdId(groupIndx, mdId){
@@ -349,58 +374,72 @@ class Game extends React.Component{
 		this.setState({puzzle: newPuzzle});	
 	}
 
-	renderGameData(data, showFeedback, isSolution){
+	async setAlertForMovie(groupIndx, alert) {
+		const newPuzzle = this.state.puzzle.slice();
+		newPuzzle[groupIndx].movie.alert = alert;
+		this.setState({puzzle: newPuzzle});
+	}
+
+	async setAlertForActor(actorIdx, alert) {
+		const newPuzzle = this.state.puzzle.slice();
+		if (actorIdx === 0 || actorIdx === newPuzzle.length) {
+			return;
+		}
+		newPuzzle[actorIdx].origin.alert = alert;
+		newPuzzle[actorIdx-1].target.alert = alert;
+		this.setState({puzzle: newPuzzle});
+	}
+
+  renderGameData(data, showFeedback, isSolution){
 		let toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
-				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+				<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`origin-${index}`}>
 					<ActorColumn
 						key = {`OriginID-${index}`}
 						groupId = {index}
 						isOriginTargetActor = {index===0}
-						actorId={group.origin['actorId']}
 						picturePath = {group.origin['profilePath']}
 						name = {group.origin['name']}
 						setSubmitData= {this.selectActor}
-
 						isFeedback={showFeedback}
 						isSolution={isSolution}
 						isCorrect={group.origin.correct ? group.origin.correct : null}
 						explanation={group.origin.explanation ? group.origin.explanation : null}
+						alert={group.origin.alert} 
 					/>
 				</Col>
 			);
 			toDisplay.push(
-				<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+				<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`movie-${index}`}>
 					<div className="link-container">
 						<img src={link} className="img-fluid" />
 					</div>
 					<MovieColumn
 						key = {`MovieId-${index}`}
 						groupId = {index} 
-						movieId = {group.movie['movieId']}
 						picturePath = {group.movie['posterPath']}
 						name = {group.movie['name']}
 						setSubmitData = {this.setMovie}
-
 						isFeedback={showFeedback}
 						isSolution={isSolution}
 						isCorrect={group.movie.correct ? group.movie.correct : null}
 						explanation={group.movie.explanation ? group.movie.explanation : null}
+						alert={group.movie.alert}
 					/>
 				</Col>
 			);
 			if(index === data.length - 1){
 				toDisplay.push(
-					<Col xs={true} sm={true} md={true} lg={true} xl={true}>
+					<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`target-${index}`}>
 						<ActorColumn
 							key = {`TargetId-${index}`}
 							groupId = {index}
 							isOriginTargetActor = {true}
-							actorId={group.target['actorId']}
 							picturePath = {group.target['profilePath']}
 							name = {group.target['name']}
 							isSolution={isSolution}
+							alert={group.movie.alert}
 						/>
 					</Col>
 				);
@@ -411,6 +450,28 @@ class Game extends React.Component{
 
 	async submitAnswer(){
 		const {puzzle} = this.state;
+		// Check if every element was assigned
+		let alertFound = false;
+		puzzle.forEach((group, idx) => {
+			if (!group.origin.actorMdbId && idx > 0) {
+				group.origin.alert = true;
+				puzzle[idx - 1].target. alert = true;
+				alertFound = true;
+			}
+			if (!group.target.actorMdbId && idx < puzzle.length-1) {
+				group.target.alert = true;
+				puzzle[idx + 1].origin.alert = true;
+				alertFound = true;
+			}
+			if (!group.movie.movieMdbId) {
+				group.movie.alert = true;
+				alertFound = true;	
+			}
+		});
+		if (alertFound) {
+			this.setState({puzzle: puzzle});
+			return;
+		}
 		let url = (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com') + '/check';
 
 		let body = {
@@ -448,6 +509,13 @@ class Game extends React.Component{
 		this.setState({
 			isSolution: true,
 			answer: this.testSolution,
+		axios.post(url, body, config).then((res) =>{
+			const {data} = res;
+			this.setState({
+				answerCorrect: res,
+			});
+		}).catch((err) =>{
+			return err;
 		});
 	}
 
