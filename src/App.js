@@ -2,7 +2,6 @@ import React from 'react';
 import './css/App.css';
 import Header from './components/header.jsx';
 import Footer from './components/footer.jsx';
-import Intro from './pages/intro.jsx';
 import Game from './pages/game.jsx';
 import Rules from './components/rules.jsx';
 import {Row, Container} from 'react-bootstrap';
@@ -30,23 +29,18 @@ class App extends React.Component{
   //Render:
   renderApp(){
     const {playGame, showAnswer} = this.state;
-    if(!playGame){
-      return (
-        <Intro
-          onClick={this.togglePuzzle}
-        />
-      );
-    }
     return (
       <Container fluid={true}>
-        <Rules />
+        <Rules/>
         <Row>
-          <Game puzzle={this.puzzle} showAnswer={showAnswer}/>
+          <Game 
+          puzzle={this.puzzle} 
+          showAnswer={showAnswer}/>
         </Row>
       </Container>
     );
   }
-// <Footer/>
+
   render() {
     return (
       <React.Fragment>

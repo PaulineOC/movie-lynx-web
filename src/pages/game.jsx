@@ -82,9 +82,168 @@ class Game extends React.Component{
 		},
 	];
 
+	testAns = [
+		{
+			movie: {
+				movieId: 0,
+				movieMdbId:111,
+				name: 'Inception',
+				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
+				correct: true,
+				explanation: "This movie is correct",
+			},
+			origin: {
+				actorId: 0,
+				actorMdbId: 0 ,
+				name: `Ken Watanabe`,
+				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
+			},
+			target: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leonardo Di Caprio`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "This actor is wrong?",
+			},
+		},
+		{
+			movie: {
+				movieId: 2,
+				movieMdbId: 222,
+				name: 'Revolutionary Road',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: true,
+				explanation: "This movie is correct!",
+
+			},
+			origin: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leonardo Di Caprio`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "Actor is wrong",
+			},
+			target: {
+				actorId: 2,
+				actorMdbId: 2,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: true,
+				explanation: "Actor is correct! ",
+			},
+		},
+		{
+			movie: {
+				movieId: 3,
+				movieMdbId: 333,
+				name: 'Revolutionary Road',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: false,
+				explanation: "This movie is wrong",
+			},
+			origin: {
+				actorId: 2,
+				actorMdbId: 3,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: false,
+				explanation: "Since movie is wrong, actor is wrong",
+			},
+			target: {
+				actorId: 3,
+				actorMdbId: 3,
+				name: 	`Cameron Diaz`,
+				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
+			},
+		},
+	];
+
+	testSolution = [
+		{
+			movie: {
+				movieId: 0,
+				movieMdbId:111,
+				name: 'Inception',
+				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
+				correct: true,
+				explanation: "This movie is correct",
+			},
+			origin: {
+				actorId: 0,
+				actorMdbId: 0 ,
+				name: `Ken Watanabe`,
+				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
+			},
+			target: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leonardo Di Caprio `,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "This actor is wrong?",
+			},
+		},
+		{
+			movie: {
+				movieId: 2,
+				movieMdbId: 222,
+				name: 'Revolutionary Road',
+				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
+				correct: true,
+				explanation: "This movie is correct!",
+
+			},
+			origin: {
+				actorId: 1,
+				actorMdbId: 1,
+				name: 	`Leonardo Di Caprio`,
+				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
+				correct: false,
+				explanation: "Actor is wrong",
+			},
+			target: {
+				actorId: 2,
+				actorMdbId: 2,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: true,
+				explanation: "Actor is correct! ",
+			},
+		},
+		{
+			movie: {
+				movieId: 3,
+				movieMdbId: 333,
+				name: 'The Holiday',
+				posterPath: `/ixNtpuq8OVp4IckgzkSJIflFDkw.jpg`,
+				correct: false,
+				explanation: "This movie is wrong",
+			},
+			origin: {
+				actorId: 2,
+				actorMdbId: 3,
+				name: 	`Kate Winslet`,
+				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
+				correct: false,
+				explanation: "Since movie is wrong, actor is wrong",
+			},
+			target: {
+				actorId: 3,
+				actorMdbId: 3,
+				name: 	`Cameron Diaz`,
+				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
+			},
+		},
+	];
+
 	constructor(props){
 		super(props);
-
+		//TODO: the getting of the puzzle and setting state will be moved to componentDidMount eventually and reference correct results
+		const originalPuzzle = this.puzzle.splice();
+		let firstActor = this.puzzle[0].origin;
+		let lastActor = this.puzzle[this.puzzle.length-1].target;
 		this.state = {
 			puzzle: [],
 			showAnswer: this.props.showAnswer,
@@ -99,7 +258,6 @@ class Game extends React.Component{
 		this.setMovie= this.setMovie.bind(this);
 		this.setMovieMdId = this.setMovieMdId.bind(this);
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
-
 		this.submitAnswer=this.submitAnswer.bind(this);
 		this.setAlertForActor = this.setAlertForActor.bind(this);
 		this.setAlertForMovie = this.setAlertForMovie.bind(this);
@@ -112,7 +270,7 @@ class Game extends React.Component{
 		let firstActor = puzzle[0].origin;
 		let lastActor = puzzle[puzzle.length-1].target;
 		const puzzleEmptied = puzzle.map((item, indx) =>{
-		return {
+		  return {
 				movie: {
 					movieId: indx,
 					movieMdbId:null,
@@ -143,11 +301,37 @@ class Game extends React.Component{
 		{
 			puzzle: puzzleEmptied,
 			showAnswer: this.props.showAnswer,
-			answer: copy,
-			answerCorrect: null,
-		});
+			answer: originalPuzzle,
+			showFeedback: false,
+			isSolution: false,
+		};
+		this.renderGameData = this.renderGameData.bind(this);
+		this.renderButtons = this.renderButtons.bind(this);
+
+		this.selectActor = this.selectActor.bind(this);
+		this.setActorMdId = this.setActorMdId.bind(this);
+		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
+
+		this.setMovie = this.setMovie.bind(this);
+		this.setMovieMdId = this.setMovieMdId.bind(this);
+		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
+
+		this.submitAnswer = this.submitAnswer.bind(this);
+		this.showSolution = this.showSolution.bind(this);
+		this.restartGame = this.restartGame.bind(this);
 	}
 
+	async componentDidMount(){
+
+			//make a get request to get puzzle
+			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/';
+			let config = {
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					crossdomain: true,
+				}
+			};
+	}
 
 	async selectActor(groupIndx, mdId, name, path){
 		await this.setActorMdId(groupIndx, mdId);
@@ -206,8 +390,8 @@ class Game extends React.Component{
 		this.setState({puzzle: newPuzzle});
 	}
 
-	renderGame(data){
-		let  toDisplay = [];
+  renderGameData(data, showFeedback, isSolution){
+		let toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
 				<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`origin-${index}`}>
@@ -218,11 +402,14 @@ class Game extends React.Component{
 						picturePath = {group.origin['profilePath']}
 						name = {group.origin['name']}
 						setSubmitData= {this.selectActor}
+						isFeedback={showFeedback}
+						isSolution={isSolution}
+						isCorrect={group.origin.correct ? group.origin.correct : null}
+						explanation={group.origin.explanation ? group.origin.explanation : null}
 						alert={group.origin.alert} 
 					/>
 				</Col>
 			);
-
 			toDisplay.push(
 				<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`movie-${index}`}>
 					<div className="link-container">
@@ -234,11 +421,14 @@ class Game extends React.Component{
 						picturePath = {group.movie['posterPath']}
 						name = {group.movie['name']}
 						setSubmitData = {this.setMovie}
+						isFeedback={showFeedback}
+						isSolution={isSolution}
+						isCorrect={group.movie.correct ? group.movie.correct : null}
+						explanation={group.movie.explanation ? group.movie.explanation : null}
 						alert={group.movie.alert}
 					/>
 				</Col>
 			);
-
 			if(index === data.length - 1){
 				toDisplay.push(
 					<Col xs={true} sm={true} md={true} lg={true} xl={true} key={`target-${index}`}>
@@ -248,6 +438,7 @@ class Game extends React.Component{
 							isOriginTargetActor = {true}
 							picturePath = {group.target['profilePath']}
 							name = {group.target['name']}
+							isSolution={isSolution}
 							alert={group.movie.alert}
 						/>
 					</Col>
@@ -258,8 +449,7 @@ class Game extends React.Component{
 	}
 
 	async submitAnswer(){
-		let {puzzle} = this.state;
-
+		const {puzzle} = this.state;
 		// Check if every element was assigned
 		let alertFound = false;
 		puzzle.forEach((group, idx) => {
@@ -288,6 +478,37 @@ class Game extends React.Component{
 			submittedPuzzle: puzzle,
 		}
 
+		//TODO: To connect to the backend, please uncomment lines below: 
+
+		// axios.post(url, body, config).then((res) =>{
+		// 	const {data} = res;
+		// 	//console.log(res);
+		// 	console.log('here are the results from submitting puzzle', data);
+		// 	this.setState({
+		// 		puzzle : data,
+		// 		showFeedback: true,
+		// 	});
+		// }).catch((err) =>{
+		// 	console.log(err);
+		// 	return err;
+		// });
+
+		/*
+			TODO
+			If connecting to the backend, please move this next setState to the THEN of the axios.post! 
+			Please change the variable this.testAns to res.data 
+		*/
+		this.setState({
+				puzzle : this.testAns,
+				showFeedback: true,
+		});
+	}
+
+	showSolution(){
+		//TODO: remove line 451 completely to use real data that will be set in componentDidMount
+		this.setState({
+			isSolution: true,
+			answer: this.testSolution,
 		axios.post(url, body, config).then((res) =>{
 			const {data} = res;
 			this.setState({
@@ -296,20 +517,45 @@ class Game extends React.Component{
 		}).catch((err) =>{
 			return err;
 		});
+	}
 
+	restartGame(){
+		window.location.reload();
+	}
+
+	renderButtons(isSolution, showFeedback){
+		if(isSolution){
+			return(
+				<Button onClick={this.restartGame} variant="danger">
+					Restart Game
+				</Button>
+			);
+		}
+		else if(showFeedback){
+			return(
+			<Button onClick={this.showSolution} variant="secondary">
+				Show original answer!
+			</Button>
+		);
+
+		}
+		return(
+			<Button onClick={this.submitAnswer} variant="primary">
+				Submit answer!
+			</Button>
+		);
 	}
 
 	render(){
-		const { puzzle, answer } = this.state;
+		const { puzzle, answer, showFeedback, isSolution } = this.state;
+		let data = isSolution ? answer : puzzle;
 		return (
 			<Container fluid={true}>
 				<Row>
-					{this.renderGame(puzzle)}
+					{this.renderGameData(data, showFeedback, isSolution)}
 				</Row>
 				<Row className="justify-content-md-center">
-					<Button onClick={this.submitAnswer} variant="dark">
-						Submit answer!
-					</Button>
+					{this.renderButtons(isSolution, showFeedback)}
 				</Row>
 			</Container>
 		);
