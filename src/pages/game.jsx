@@ -278,22 +278,22 @@ class Game extends React.Component{
 				movie: {
 					movieIdx: indx,
 					movieMDBId:null,
-					name: null,
-					picturePath: null,
+					title: null,
+					posterPath: null,
 					alert: false,
 				},
 				origin: {
 					actorIdx: null,
 					actorMDBId: null,
 					name: null,
-					picturePath: null,
+					profilePath: null,
 					alert: false,
 				},
 				target: {
-					actorId: null,
+					actorIdx: null,
 					actorMDBId: null,
 					name: null,
-					picturePath: null,
+					profilePath: null,
 					alert: false,
 				},
 			};
@@ -346,7 +346,7 @@ class Game extends React.Component{
 
 	async setMoviePictureAndName(groupIndx, name, path){
 		const newPuzzle = this.state.puzzle.slice();
-		newPuzzle[groupIndx].movie.name= name;
+		newPuzzle[groupIndx].movie.title= name;
 		newPuzzle[groupIndx].movie.posterPath= path;
 		this.setState({puzzle: newPuzzle});	
 	}
@@ -403,7 +403,7 @@ class Game extends React.Component{
 						key = {`MovieId-${index}`}
 						groupId = {index} 
 						picturePath = {group.movie['posterPath']}
-						name = {group.movie['name']}
+						name = {group.movie['title']}
 						setSubmitData = {this.setMovie}
 						isFeedback={showFeedback}
 						isSolution={isSolution}
@@ -461,11 +461,8 @@ class Game extends React.Component{
 		let body = {
 			submittedPuzzle: puzzle,
 		}
-		console.log('here is what i\'m sending');
 		axios.post(url, body, config).then((res) =>{
-			console.log(res.data.result);
 			const {data:  { result: results } } = res;
-			console.log('here are the results from submitting puzzle', results);
 			this.setState({
 				puzzle : results,
 				showFeedback: true,
@@ -477,19 +474,9 @@ class Game extends React.Component{
 	}
 
 	showSolution(){
-		//TODO: remove line 451 completely to use real data that will be set in componentDidMount
 		this.setState({
 			isSolution: true,
 		});
-
-		// axios.post(url, body, config).then((res) =>{
-		// 	const {data} = res;
-		// 	this.setState({
-		// 		answerCorrect: res,
-		// 	});
-		// }).catch((err) =>{
-		// 	return err;
-		// });
 		
 	}
 

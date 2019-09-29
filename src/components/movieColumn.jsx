@@ -75,7 +75,7 @@ class MovieColumn extends React.Component{
 		);
 	}
 
-	renderPostGameData(isSolution = false, imgPath, name, isCorrect, explanation){
+	renderPostGameData(isSolution, imgPath, name, isCorrect, explanation){
 		return(
 			<Card bg={isSolution ? "secondary" : (isCorrect ? "success" : "danger")}>
 				<Card.Img src={imgPath ? `${basePosterUrl}${imgPath}` : poster}/>
@@ -136,7 +136,6 @@ class MovieColumn extends React.Component{
 
 	renderMovieColumn() {
 		const {picturePath, name, isFeedback, isSolution, isCorrect, explanation} = this.props;
-
 		if(isFeedback){
 			return (
 				<React.Fragment>
