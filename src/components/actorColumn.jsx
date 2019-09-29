@@ -23,6 +23,7 @@ class ActorColumn extends React.Component{
 			input: '',
 			show: false,
 			searchResults: [],
+			invalidQuery: false,
 		}
 		this.renderOriginTarget = this.renderOriginTarget.bind(this);
 		this.renderInputActor = this.renderInputActor.bind(this);
@@ -32,7 +33,15 @@ class ActorColumn extends React.Component{
 		this.showModal = this.showModal.bind(this);
 		this.hideModal = this.hideModal.bind(this);
 		this.submitActor = this.submitActor.bind(this);
-		this.searchActorsHandler = this.searchActorsHandler.bind(this);
+		this.searchActorsHandler = this.searchActorsHandler.bind(this); 
+		this.validateInput = this.validateInput.bind(this);
+	}
+
+	async validateInput() {
+		const {input} = this.state;
+		const invalidQuery = input ? false : true;
+		await this.setState({invalidQuery: invalidQuery})
+		return invalidQuery;
 	}
 
 	async searchActorsHandler() {
@@ -59,9 +68,10 @@ class ActorColumn extends React.Component{
 	}
 
 	renderInputActor(imgPath, name){
-		const {input} = this.state;
+		const {input, invalidQuery} = this.state;
+		const {alert} = this.props;
 		return(
-			<Card bg="light">
+			<Card bg="light" border={alert ? "danger" : "secondary"}>
 				<Card.Img variant="top" src={imgPath ? `${baseProfileUrl}${imgPath}` : anonymous} />
 				<Card.Body className="text-center">
 					<b>{name}</b>
@@ -72,6 +82,7 @@ class ActorColumn extends React.Component{
 							onChange={this.handleInput}
 							value={this.state.input}
 							size="sm"
+							isInvalid={invalidQuery}
 						/>
 						<InputGroup.Append>
 					     	<Button onMouseDown={this.showModal} variant="outline-secondary" size="sm">	            	
@@ -107,29 +118,6 @@ class ActorColumn extends React.Component{
 		});
 	}
 
-	showModal(){
-		const {showModal, input} = this.state;
-		if(input){
-			return(
-				<React.Fragment>
-					<Modal
-						shutModal={this.closeModal}
-					>
-						<SearchTable
-							isActor={true}
-							queryString={input}
-							selector={this.submitActor}
-						/>
-					</Modal>
-				</React.Fragment>
-			);
-
-		}
-		else {
-			return null;
-		}
-	}
-
 	renderModal() {
 		const {input, show, searchResults} = this.state;
 		return (
@@ -146,6 +134,10 @@ class ActorColumn extends React.Component{
 	}
 
 	async showModal(){
+		let invalidQuery = await this.validateInput();
+		if (invalidQuery) {
+			return;
+		}
 		await this.setState({
 			show: true,
 		});

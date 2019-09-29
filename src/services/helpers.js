@@ -8,6 +8,10 @@ const config = {
 };
 const baseApiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://movie-lynx-backend.herokuapp.com';
 
+async function getPuzzle(){
+	const response = await axios.get(`${baseApiUrl}/puzzle`, null, config);
+	return response.data.puzzle;
+}
 async function searchActors(queryString){
 	const response = await axios.post(`${baseApiUrl}/searchActor`, {actor: queryString}, config);
 	return response.data.results;
@@ -21,4 +25,5 @@ async function searchMovies(queryString){
 export {
 	searchActors,
 	searchMovies,
+	getPuzzle,
 }
