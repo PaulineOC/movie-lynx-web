@@ -19,7 +19,7 @@ const config = {
 
 class Game extends React.Component{
 
-	puzzle = [
+	testPuzzle = [
 		{
 			movie: {
 				movieId: 0,
@@ -240,36 +240,38 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-		//TODO: the getting of the puzzle and setting state will be moved to componentDidMount eventually and reference correct results
-		const originalPuzzle = this.puzzle.splice();
-		let firstActor = this.puzzle[0].origin;
-		let lastActor = this.puzzle[this.puzzle.length-1].target;
+		
 		this.state = {
 			puzzle: [],
 			showAnswer: this.props.showAnswer,
 			answer: [],
 			answerCorrect: null,
 		};
-		this.renderGame = this.renderGame.bind(this);
+
+		this.renderGameData = this.renderGameData.bind(this);
+		this.renderButtons = this.renderButtons.bind(this);
+
 		this.selectActor = this.selectActor.bind(this);
 		this.setActorMdId = this.setActorMdId.bind(this);
 		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
 
-		this.setMovie= this.setMovie.bind(this);
+		this.setMovie = this.setMovie.bind(this);
 		this.setMovieMdId = this.setMovieMdId.bind(this);
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
-		this.submitAnswer=this.submitAnswer.bind(this);
-		this.setAlertForActor = this.setAlertForActor.bind(this);
-		this.setAlertForMovie = this.setAlertForMovie.bind(this);
+
+		this.submitAnswer = this.submitAnswer.bind(this);
+		this.showSolution = this.showSolution.bind(this);
+		this.restartGame = this.restartGame.bind(this);
 	}
 
 	async componentDidMount(){
 			
-		const puzzle = await getPuzzle();
-		const copy = puzzle.splice();
-		let firstActor = puzzle[0].origin;
-		let lastActor = puzzle[puzzle.length-1].target;
-		const puzzleEmptied = puzzle.map((item, indx) =>{
+		const originalPuzzle = await getPuzzle();
+
+		const copy = originalPuzzle.splice();
+		let firstActor = originalPuzzle[0].origin;
+		let lastActor = originalPuzzle[originalPuzzle.length-1].target;
+		const puzzleEmptied = originalPuzzle.map((item, indx) =>{
 		  return {
 				movie: {
 					movieId: indx,
@@ -304,33 +306,7 @@ class Game extends React.Component{
 			answer: originalPuzzle,
 			showFeedback: false,
 			isSolution: false,
-		};
-		this.renderGameData = this.renderGameData.bind(this);
-		this.renderButtons = this.renderButtons.bind(this);
-
-		this.selectActor = this.selectActor.bind(this);
-		this.setActorMdId = this.setActorMdId.bind(this);
-		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
-
-		this.setMovie = this.setMovie.bind(this);
-		this.setMovieMdId = this.setMovieMdId.bind(this);
-		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
-
-		this.submitAnswer = this.submitAnswer.bind(this);
-		this.showSolution = this.showSolution.bind(this);
-		this.restartGame = this.restartGame.bind(this);
-	}
-
-	async componentDidMount(){
-
-			//make a get request to get puzzle
-			let url = 'https://movie-lynx-backend.herokuapp.com/puzzle/';
-			let config = {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-					crossdomain: true,
-				}
-			};
+		});
 	}
 
 	async selectActor(groupIndx, mdId, name, path){
@@ -390,7 +366,7 @@ class Game extends React.Component{
 		this.setState({puzzle: newPuzzle});
 	}
 
-  renderGameData(data, showFeedback, isSolution){
+  	renderGameData(data, showFeedback, isSolution){
 		let toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
@@ -478,45 +454,45 @@ class Game extends React.Component{
 			submittedPuzzle: puzzle,
 		}
 
-		//TODO: To connect to the backend, please uncomment lines below: 
-
-		// axios.post(url, body, config).then((res) =>{
-		// 	const {data} = res;
-		// 	//console.log(res);
-		// 	console.log('here are the results from submitting puzzle', data);
-		// 	this.setState({
-		// 		puzzle : data,
-		// 		showFeedback: true,
-		// 	});
-		// }).catch((err) =>{
-		// 	console.log(err);
-		// 	return err;
-		// });
+		axios.post(url, body, config).then((res) =>{
+			const {data} = res;
+			//console.log(res);
+			console.log('here are the results from submitting puzzle', data);
+			// this.setState({
+			// 	puzzle : data,
+			// 	showFeedback: true,
+			// });
+		}).catch((err) =>{
+			console.log(err);
+			return err;
+		});
 
 		/*
 			TODO
 			If connecting to the backend, please move this next setState to the THEN of the axios.post! 
 			Please change the variable this.testAns to res.data 
 		*/
-		this.setState({
-				puzzle : this.testAns,
-				showFeedback: true,
-		});
+		// this.setState({
+		// 		puzzle : this.testAns,
+		// 		showFeedback: true,
+		// });
 	}
 
 	showSolution(){
 		//TODO: remove line 451 completely to use real data that will be set in componentDidMount
-		this.setState({
-			isSolution: true,
-			answer: this.testSolution,
-		axios.post(url, body, config).then((res) =>{
-			const {data} = res;
-			this.setState({
-				answerCorrect: res,
-			});
-		}).catch((err) =>{
-			return err;
-		});
+		// this.setState({
+		// 	isSolution: true,
+		// 	answer: this.testSolution
+		// });
+
+		// axios.post(url, body, config).then((res) =>{
+		// 	const {data} = res;
+		// 	this.setState({
+		// 		answerCorrect: res,
+		// 	});
+		// }).catch((err) =>{
+		// 	return err;
+		// });
 	}
 
 	restartGame(){
@@ -548,6 +524,8 @@ class Game extends React.Component{
 
 	render(){
 		const { puzzle, answer, showFeedback, isSolution } = this.state;
+
+		console.log(puzzle);
 		let data = isSolution ? answer : puzzle;
 		return (
 			<Container fluid={true}>
