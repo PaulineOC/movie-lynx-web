@@ -5,7 +5,7 @@ import ActorColumn from '../components/actorColumn.jsx';
 import MovieColumn from '../components/movieColumn.jsx';
 
 import {getPuzzle} from '../services/helpers';
-import {Container, Row, Button, Col} from 'react-bootstrap';
+import {Container, Row, Button, Col, Spinner} from 'react-bootstrap';
 import link from '../images/link.jpg';
 
 require('bootstrap');
@@ -23,19 +23,19 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 0,
-				movieMdbId:111,
+				movieMDBId:111,
 				name: 'Inception',
 				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
 			},
 			origin: {
 				actorId: 0,
-				actorMdbId: 0 ,
+				actorMDBId: 0 ,
 				name: `Ken Watanabe`,
 				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
 			},
 			target: {
 				actorId: 1,
-				actorMdbId: 1,
+				actorMDBId: 1,
 				name: 	`Leonardo Di Caprio`,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 			},
@@ -43,19 +43,19 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 2,
-				movieMdbId: 222,
+				movieMDBId: 222,
 				name: 'Revolutionary Road',
 				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 			},
 			origin: {
 				actorId: 1,
-				actorMdbId: 1,
+				actorMDBId: 1,
 				name: 	`Leonardo Di Caprio`,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 			},
 			target: {
 				actorId: 2,
-				actorMdbId: 2,
+				actorMDBId: 2,
 				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 			},
@@ -63,19 +63,19 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 3,
-				movieMdbId: 333,
+				movieMDBId: 333,
 				name: 'Revolutionary Road',
 				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 			},
 			origin: {
 				actorId: 2,
-				actorMdbId: 3,
+				actorMDBId: 3,
 				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 			},
 			target: {
 				actorId: 3,
-				actorMdbId: 3,
+				actorMDBId: 3,
 				name: 	`Cameron Diaz`,
 				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
 			},
@@ -86,7 +86,7 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 0,
-				movieMdbId:111,
+				movieMDBId:111,
 				name: 'Inception',
 				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
 				correct: true,
@@ -94,13 +94,13 @@ class Game extends React.Component{
 			},
 			origin: {
 				actorId: 0,
-				actorMdbId: 0 ,
+				actorMDBId: 0 ,
 				name: `Ken Watanabe`,
 				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
 			},
 			target: {
 				actorId: 1,
-				actorMdbId: 1,
+				actorMDBId: 1,
 				name: 	`Leonardo Di Caprio`,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 				correct: false,
@@ -110,7 +110,7 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 2,
-				movieMdbId: 222,
+				movieMDBId: 222,
 				name: 'Revolutionary Road',
 				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 				correct: true,
@@ -119,7 +119,7 @@ class Game extends React.Component{
 			},
 			origin: {
 				actorId: 1,
-				actorMdbId: 1,
+				actorMDBId: 1,
 				name: 	`Leonardo Di Caprio`,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 				correct: false,
@@ -127,7 +127,7 @@ class Game extends React.Component{
 			},
 			target: {
 				actorId: 2,
-				actorMdbId: 2,
+				actorMDBId: 2,
 				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 				correct: true,
@@ -137,7 +137,7 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 3,
-				movieMdbId: 333,
+				movieMDBId: 333,
 				name: 'Revolutionary Road',
 				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 				correct: false,
@@ -145,7 +145,7 @@ class Game extends React.Component{
 			},
 			origin: {
 				actorId: 2,
-				actorMdbId: 3,
+				actorMDBId: 3,
 				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 				correct: false,
@@ -153,7 +153,7 @@ class Game extends React.Component{
 			},
 			target: {
 				actorId: 3,
-				actorMdbId: 3,
+				actorMDBId: 3,
 				name: 	`Cameron Diaz`,
 				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
 			},
@@ -164,7 +164,7 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 0,
-				movieMdbId:111,
+				movieMDBId:111,
 				name: 'Inception',
 				posterPath: `/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg`,
 				correct: true,
@@ -172,13 +172,13 @@ class Game extends React.Component{
 			},
 			origin: {
 				actorId: 0,
-				actorMdbId: 0 ,
+				actorMDBId: 0 ,
 				name: `Ken Watanabe`,
 				profilePath: `/v8WQ5wCIZsnqVZn7jQveaDqurox.jpg`,
 			},
 			target: {
 				actorId: 1,
-				actorMdbId: 1,
+				actorMDBId: 1,
 				name: 	`Leonardo Di Caprio `,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 				correct: false,
@@ -188,7 +188,7 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 2,
-				movieMdbId: 222,
+				movieMDBId: 222,
 				name: 'Revolutionary Road',
 				posterPath: `/bnOK1lmdlqdy2HX6IgKx9TQD7Ax.jpg`,
 				correct: true,
@@ -197,7 +197,7 @@ class Game extends React.Component{
 			},
 			origin: {
 				actorId: 1,
-				actorMdbId: 1,
+				actorMDBId: 1,
 				name: 	`Leonardo Di Caprio`,
 				profilePath: `/aLUFp0zWpLVyIOgY0scIpuuKZLE.jpg`,
 				correct: false,
@@ -205,7 +205,7 @@ class Game extends React.Component{
 			},
 			target: {
 				actorId: 2,
-				actorMdbId: 2,
+				actorMDBId: 2,
 				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 				correct: true,
@@ -215,7 +215,7 @@ class Game extends React.Component{
 		{
 			movie: {
 				movieId: 3,
-				movieMdbId: 333,
+				movieMDBId: 333,
 				name: 'The Holiday',
 				posterPath: `/ixNtpuq8OVp4IckgzkSJIflFDkw.jpg`,
 				correct: false,
@@ -223,7 +223,7 @@ class Game extends React.Component{
 			},
 			origin: {
 				actorId: 2,
-				actorMdbId: 3,
+				actorMDBId: 3,
 				name: 	`Kate Winslet`,
 				profilePath: `/4dnurP9Szr9y6S3nTkd3pHUQg5b.jpg`,
 				correct: false,
@@ -231,7 +231,7 @@ class Game extends React.Component{
 			},
 			target: {
 				actorId: 3,
-				actorMdbId: 3,
+				actorMDBId: 3,
 				name: 	`Cameron Diaz`,
 				profilePath: `/xCFLBW1OM3AfgS12sqJX3NjSPSA.jpg`,
 			},
@@ -259,12 +259,14 @@ class Game extends React.Component{
 		this.setMovieMdId = this.setMovieMdId.bind(this);
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
 
-		this.submitAnswer = this.submitAnswer.bind(this);
+		this.submitAnswer=this.submitAnswer.bind(this);
+		this.setAlertForActor = this.setAlertForActor.bind(this);
+		this.setAlertForMovie = this.setAlertForMovie.bind(this);
 		this.showSolution = this.showSolution.bind(this);
-		this.restartGame = this.restartGame.bind(this);
+		this.renderLoading = this.renderLoading.bind(this);
 	}
 
-	async componentDidMount(){
+	async componentWillMount(){
 			
 		const originalPuzzle = await getPuzzle();
 
@@ -274,22 +276,22 @@ class Game extends React.Component{
 		const puzzleEmptied = originalPuzzle.map((item, indx) =>{
 		  return {
 				movie: {
-					movieId: indx,
-					movieMdbId:null,
+					movieIdx: indx,
+					movieMDBId:null,
 					name: null,
 					picturePath: null,
 					alert: false,
 				},
 				origin: {
-					actorId: null,
-					actorMdbId: null,
+					actorIdx: null,
+					actorMDBId: null,
 					name: null,
 					picturePath: null,
 					alert: false,
 				},
 				target: {
 					actorId: null,
-					actorMdbId: null,
+					actorMDBId: null,
 					name: null,
 					picturePath: null,
 					alert: false,
@@ -299,8 +301,7 @@ class Game extends React.Component{
 		puzzleEmptied[0].origin = firstActor;
 		puzzleEmptied[puzzleEmptied.length-1].target = lastActor;
 
-		this.setState(
-		{
+		this.setState({
 			puzzle: puzzleEmptied,
 			showAnswer: this.props.showAnswer,
 			answer: originalPuzzle,
@@ -317,8 +318,8 @@ class Game extends React.Component{
 
 	async setActorMdId(groupIndx, mdId){
 		const newPuzzle = this.state.puzzle.slice();
-		newPuzzle[groupIndx].origin.actorMdbId= mdId;
-		newPuzzle[groupIndx-1].target.actorMdbId = mdId;
+		newPuzzle[groupIndx].origin.actorMDBId= mdId;
+		newPuzzle[groupIndx-1].target.actorMDBId = mdId;
 		this.setState({puzzle: newPuzzle});
 	}
 
@@ -339,7 +340,7 @@ class Game extends React.Component{
 
 	async setMovieMdId(groupIndx, mdId){
 		const newPuzzle = this.state.puzzle.slice();
-		newPuzzle[groupIndx].movie.movieMdbId = mdId;
+		newPuzzle[groupIndx].movie.movieMDBId = mdId;
 		this.setState({puzzle: newPuzzle});
 	}
 
@@ -367,6 +368,13 @@ class Game extends React.Component{
 	}
 
   	renderGameData(data, showFeedback, isSolution){
+  		if (data.length === 0) {
+  			return (
+  				<Col className="text-center">
+  					{this.renderLoading()}
+  				</Col>
+  			);
+  		}
 		let toDisplay = [];
 		data.forEach((group, index) =>{
 			toDisplay.push(
@@ -429,17 +437,17 @@ class Game extends React.Component{
 		// Check if every element was assigned
 		let alertFound = false;
 		puzzle.forEach((group, idx) => {
-			if (!group.origin.actorMdbId && idx > 0) {
+			if (!group.origin.actorMDBId && idx > 0) {
 				group.origin.alert = true;
 				puzzle[idx - 1].target. alert = true;
 				alertFound = true;
 			}
-			if (!group.target.actorMdbId && idx < puzzle.length-1) {
+			if (!group.target.actorMDBId && idx < puzzle.length-1) {
 				group.target.alert = true;
 				puzzle[idx + 1].origin.alert = true;
 				alertFound = true;
 			}
-			if (!group.movie.movieMdbId) {
+			if (!group.movie.movieMDBId) {
 				group.movie.alert = true;
 				alertFound = true;	
 			}
@@ -453,37 +461,26 @@ class Game extends React.Component{
 		let body = {
 			submittedPuzzle: puzzle,
 		}
-
+		console.log('here is what i\'m sending');
 		axios.post(url, body, config).then((res) =>{
-			const {data} = res;
-			//console.log(res);
-			console.log('here are the results from submitting puzzle', data);
-			// this.setState({
-			// 	puzzle : data,
-			// 	showFeedback: true,
-			// });
+			console.log(res.data.result);
+			const {data:  { result: results } } = res;
+			console.log('here are the results from submitting puzzle', results);
+			this.setState({
+				puzzle : results,
+				showFeedback: true,
+			});
 		}).catch((err) =>{
 			console.log(err);
 			return err;
 		});
-
-		/*
-			TODO
-			If connecting to the backend, please move this next setState to the THEN of the axios.post! 
-			Please change the variable this.testAns to res.data 
-		*/
-		// this.setState({
-		// 		puzzle : this.testAns,
-		// 		showFeedback: true,
-		// });
 	}
 
 	showSolution(){
 		//TODO: remove line 451 completely to use real data that will be set in componentDidMount
-		// this.setState({
-		// 	isSolution: true,
-		// 	answer: this.testSolution
-		// });
+		this.setState({
+			isSolution: true,
+		});
 
 		// axios.post(url, body, config).then((res) =>{
 		// 	const {data} = res;
@@ -493,6 +490,7 @@ class Game extends React.Component{
 		// }).catch((err) =>{
 		// 	return err;
 		// });
+		
 	}
 
 	restartGame(){
@@ -522,10 +520,16 @@ class Game extends React.Component{
 		);
 	}
 
+	renderLoading() {
+		return (
+			<Spinner animation="border" role="status" size="xl"> 
+				<span className="sr-only">Loading...</span>
+			</Spinner>
+		);
+	}
+
 	render(){
 		const { puzzle, answer, showFeedback, isSolution } = this.state;
-
-		console.log(puzzle);
 		let data = isSolution ? answer : puzzle;
 		return (
 			<Container fluid={true}>
