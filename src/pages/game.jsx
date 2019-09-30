@@ -19,7 +19,7 @@ const config = {
 
 class Game extends React.Component{
 
-	puzzle = [
+	testPuzzle = [
 		{
 			movie: {
 				movieId: 0,
@@ -240,70 +240,14 @@ class Game extends React.Component{
 
 	constructor(props){
 		super(props);
-		//TODO: the getting of the puzzle and setting state will be moved to componentDidMount eventually and reference correct results
-		const originalPuzzle = this.puzzle.splice();
-		let firstActor = this.puzzle[0].origin;
-		let lastActor = this.puzzle[this.puzzle.length-1].target;
+		
 		this.state = {
 			puzzle: [],
 			showAnswer: this.props.showAnswer,
 			answer: [],
 			answerCorrect: null,
 		};
-		this.selectActor = this.selectActor.bind(this);
-		this.setActorMdId = this.setActorMdId.bind(this);
-		this.setActorPictureAndName = this.setActorPictureAndName.bind(this);
 
-		this.setMovie= this.setMovie.bind(this);
-		this.setMovieMdId = this.setMovieMdId.bind(this);
-		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
-		this.submitAnswer=this.submitAnswer.bind(this);
-		this.setAlertForActor = this.setAlertForActor.bind(this);
-		this.setAlertForMovie = this.setAlertForMovie.bind(this);
-		this.renderLoading = this.renderLoading.bind(this);
-	}
-
-	async componentWillMount(){
-			
-		const puzzle = await getPuzzle();
-		const copy = puzzle.splice();
-		let firstActor = puzzle[0].origin;
-		let lastActor = puzzle[puzzle.length-1].target;
-		const puzzleEmptied = puzzle.map((item, indx) =>{
-		  return {
-				movie: {
-					movieId: indx,
-					movieMDBId:null,
-					name: null,
-					picturePath: null,
-					alert: false,
-				},
-				origin: {
-					actorId: null,
-					actorMDBId: null,
-					name: null,
-					picturePath: null,
-					alert: false,
-				},
-				target: {
-					actorId: null,
-					actorMDBId: null,
-					name: null,
-					picturePath: null,
-					alert: false,
-				},
-			};
-		});
-		puzzleEmptied[0].origin = firstActor;
-		puzzleEmptied[puzzleEmptied.length-1].target = lastActor;
-
-		this.setState({
-			puzzle: puzzleEmptied,
-			showAnswer: this.props.showAnswer,
-			answer: puzzle,
-			showFeedback: false,
-			isSolution: false,
-		});
 		this.renderGameData = this.renderGameData.bind(this);
 		this.renderButtons = this.renderButtons.bind(this);
 
@@ -315,9 +259,55 @@ class Game extends React.Component{
 		this.setMovieMdId = this.setMovieMdId.bind(this);
 		this.setMoviePictureAndName = this.setMoviePictureAndName.bind(this);
 
-		this.submitAnswer = this.submitAnswer.bind(this);
+		this.submitAnswer=this.submitAnswer.bind(this);
+		this.setAlertForActor = this.setAlertForActor.bind(this);
+		this.setAlertForMovie = this.setAlertForMovie.bind(this);
 		this.showSolution = this.showSolution.bind(this);
-		this.restartGame = this.restartGame.bind(this);
+		this.renderLoading = this.renderLoading.bind(this);
+	}
+
+	async componentWillMount(){
+			
+		const originalPuzzle = await getPuzzle();
+
+		const copy = originalPuzzle.splice();
+		let firstActor = originalPuzzle[0].origin;
+		let lastActor = originalPuzzle[originalPuzzle.length-1].target;
+		const puzzleEmptied = originalPuzzle.map((item, indx) =>{
+		  return {
+				movie: {
+					movieIdx: indx,
+					movieMDBId:null,
+					title: null,
+					posterPath: null,
+					alert: false,
+				},
+				origin: {
+					actorIdx: null,
+					actorMDBId: null,
+					name: null,
+					profilePath: null,
+					alert: false,
+				},
+				target: {
+					actorIdx: null,
+					actorMDBId: null,
+					name: null,
+					profilePath: null,
+					alert: false,
+				},
+			};
+		});
+		puzzleEmptied[0].origin = firstActor;
+		puzzleEmptied[puzzleEmptied.length-1].target = lastActor;
+
+		this.setState({
+			puzzle: puzzleEmptied,
+			showAnswer: this.props.showAnswer,
+			answer: originalPuzzle,
+			showFeedback: false,
+			isSolution: false,
+		});
 	}
 
 	async selectActor(groupIndx, mdId, name, path){
@@ -356,7 +346,7 @@ class Game extends React.Component{
 
 	async setMoviePictureAndName(groupIndx, name, path){
 		const newPuzzle = this.state.puzzle.slice();
-		newPuzzle[groupIndx].movie.name= name;
+		newPuzzle[groupIndx].movie.title= name;
 		newPuzzle[groupIndx].movie.posterPath= path;
 		this.setState({puzzle: newPuzzle});	
 	}
@@ -413,7 +403,7 @@ class Game extends React.Component{
 						key = {`MovieId-${index}`}
 						groupId = {index} 
 						picturePath = {group.movie['posterPath']}
-						name = {group.movie['name']}
+						name = {group.movie['title']}
 						setSubmitData = {this.setMovie}
 						isFeedback={showFeedback}
 						isSolution={isSolution}
@@ -471,39 +461,23 @@ class Game extends React.Component{
 		let body = {
 			submittedPuzzle: puzzle,
 		}
-
-		//TODO: To connect to the backend, please uncomment lines below: 
-
-		// axios.post(url, body, config).then((res) =>{
-		// 	const {data} = res;
-		// 	//console.log(res);
-		// 	console.log('here are the results from submitting puzzle', data);
-		// 	this.setState({
-		// 		puzzle : data,
-		// 		showFeedback: true,
-		// 	});
-		// }).catch((err) =>{
-		// 	console.log(err);
-		// 	return err;
-		// });
-
-		/*
-			TODO
-			If connecting to the backend, please move this next setState to the THEN of the axios.post! 
-			Please change the variable this.testAns to res.data 
-		*/
-		this.setState({
-				puzzle : this.testAns,
+		axios.post(url, body, config).then((res) =>{
+			const {data:  { result: results } } = res;
+			this.setState({
+				puzzle : results,
 				showFeedback: true,
+			});
+		}).catch((err) =>{
+			console.log(err);
+			return err;
 		});
 	}
 
 	showSolution(){
-		//TODO: remove line 451 completely to use real data that will be set in componentDidMount
 		this.setState({
 			isSolution: true,
-			answer: this.testSolution,
 		});
+		
 	}
 
 	restartGame(){
